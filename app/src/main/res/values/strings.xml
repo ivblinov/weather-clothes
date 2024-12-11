@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">WeatherClothes_291024</string>
+
+    <string name="weather_menu">Weather</string>
+    <string name="places_menu">Places</string>
+
+    <string name="main_fragment">Main Fragment</string>
+    <string name="places_fragment">Places Fragment</string>
 </resources>

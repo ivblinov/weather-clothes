@@ -2,4 +2,9 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="endColorGradientBottomNav">#07A64F</color>
+    <color name="startColorGradientBottomNav">#76AC31</color>
+
+    <color name="whiteOpacity50">#88FFFFFF</color>
 </resources>

@@ -1,10 +1,11 @@
-package com.weatherclothes.artist
+package com.weatherclothes.artist.presentation
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {

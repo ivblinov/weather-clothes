@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kapt)
 }
 
 android {
@@ -55,4 +56,8 @@ dependencies {
 
     // navigation:
     implementation(libs.bundles.navigation)
+
+    // dagger:
+    implementation(libs.dagger)
+    kapt(libs.dagger.compiler)
 }

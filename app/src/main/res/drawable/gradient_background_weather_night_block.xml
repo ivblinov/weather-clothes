@@ -4,7 +4,8 @@
 
     <gradient
         android:angle="90"
-        android:endColor="@color/endColorGradientBottomNav"
-        android:startColor="@color/startColorGradientBottomNav"
+        android:endColor="@color/endColorGradientBgWeatherNightBlock"
+        android:startColor="@color/startColorGradientBgWeatherNightBlock"
         android:type="linear" />
+
 </shape>

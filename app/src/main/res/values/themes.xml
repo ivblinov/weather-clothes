@@ -4,11 +4,24 @@
 <!--         <item name="colorPrimary">@android:color/holo_green_dark</item>-->
     </style>
 
-    <style name="Theme.WeatherClothes_291024" parent="Base.Theme.WeatherClothes_291024" />
+    <style name="Theme.WeatherClothes_291024" parent="Base.Theme.WeatherClothes_291024">
+        <item name="android:statusBarColor">@color/statusBar</item>
+        <item name="android:navigationBarColor">@color/navigationBar</item>
+    </style>
 
     <style name="BottomNavigationTextStyle" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">@dimen/bottom_menu_text_size</item>
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/instrument_sans_regular</item>
+    </style>
+
+    <style name="Text">
+        <item name="android:fontFamily">@font/instrument_sans_regular</item>
+        <item name="android:textSize">@dimen/text_size_weather_night_block</item>
+        <item name="android:textColor">@color/textMain</item>
+    </style>
+
+    <style name="Text.TextBold" parent="Text">
+        <item name="android:fontFamily">@font/instrument_sans_bold</item>
     </style>
 </resources>

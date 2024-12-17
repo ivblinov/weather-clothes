@@ -6,5 +6,14 @@
     <color name="endColorGradientBottomNav">#07A64F</color>
     <color name="startColorGradientBottomNav">#76AC31</color>
 
+    <color name="endColorGradientBgWeatherNightBlock">#EAEEF2</color>
+    <color name="startColorGradientBgWeatherNightBlock">#FEFFFF</color>
+
     <color name="whiteOpacity50">#88FFFFFF</color>
+
+    <color name="textMain">#302F2F</color>
+
+    <color name="settingsBar">#0B67C1</color>
+    <color name="statusBar">#03427B</color>
+    <color name="navigationBar">#5EAB38</color>
 </resources>

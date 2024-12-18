@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Base.Theme.WeatherClothes_291024" parent="Theme.Material3.DayNight.NoActionBar">
-<!--         <item name="colorPrimary">@android:color/holo_green_dark</item>-->
+        <!--         <item name="colorPrimary">@android:color/holo_green_dark</item>-->
     </style>
 
     <style name="Theme.WeatherClothes_291024" parent="Base.Theme.WeatherClothes_291024">
@@ -9,10 +9,15 @@
         <item name="android:navigationBarColor">@color/navigationBar</item>
     </style>
 
-    <style name="BottomNavigationTextStyle" parent="TextAppearance.AppCompat.Caption">
+    <style name="TextSecondaryStyle" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">@dimen/bottom_menu_text_size</item>
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/instrument_sans_regular</item>
+    </style>
+    
+    <style name="TextSecAccent" parent="Text">
+        <item name="android:fontFamily">@font/instrument_sans_semibold</item>
+        <item name="android:textSize">@dimen/bottom_menu_text_size</item>
     </style>
 
     <style name="Text">
@@ -21,7 +26,28 @@
         <item name="android:textColor">@color/textMain</item>
     </style>
 
-    <style name="Text.TextBold" parent="Text">
+    <style name="TextMainAccentStyle" parent="Text">
         <item name="android:fontFamily">@font/instrument_sans_bold</item>
+    </style>
+
+    <style name="Text.Temperature" parent="Text">
+        <item name="android:textSize">@dimen/text_size_temperature</item>
+    </style>
+
+    <style name="TabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/TabTextAppearance</item>
+    </style>
+
+    <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="android:textStyle">normal</item>
+        <item name="textAllCaps">false</item>
+        <item name="singleLine">true</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="BorderLineStyle">
+        <item name="android:background">@color/black</item>
+        <item name="android:layout_marginTop">@dimen/layout_margin_top_border</item>
     </style>
 </resources>

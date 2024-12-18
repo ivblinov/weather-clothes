@@ -27,6 +27,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <HorizontalScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="@dimen/size_0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="@+id/settings"
+        app:layout_constraintEnd_toEndOf="@+id/locationBar"
+        app:layout_constraintStart_toEndOf="@+id/settings"
+        app:layout_constraintTop_toTopOf="@+id/settings">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:background="@android:color/transparent"
+            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
+            app:layout_constraintBottom_toBottomOf="@+id/scrollView"
+            app:layout_constraintEnd_toEndOf="@+id/locationBar"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintStart_toEndOf="@+id/scrollView"
+            app:layout_constraintTop_toTopOf="@+id/scrollView">
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tabLayout"
+                style="@style/TabLayoutStyle"
+                app:tabMode="scrollable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                app:tabIndicatorColor="@color/tabSelectedTextColor"
+                app:tabSelectedTextColor="@color/tabSelectedTextColor"
+                app:tabTextColor="@color/tabTextColorWhite" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+    </HorizontalScrollView>
+
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierTop"
         android:layout_width="wrap_content"
@@ -37,56 +73,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.07" />
 
-    <androidx.constraintlayout.widget.Barrier
-        android:id="@+id/barrier"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.77" />
-
-    <LinearLayout
-        android:layout_width="match_parent"
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/viewPager"
+        android:layout_width="@dimen/size_0dp"
         android:layout_height="@dimen/size_0dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingHorizontal="@dimen/padding_horizontal"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/barrier">
-
-        <com.weatherclothes.artist.presentation.customView.WeatherNightBlock
-            android:id="@+id/weatherNightBlock1"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_0dp"
-            android:layout_weight="1"
-            app:iconWeather="@drawable/icon_weather_sunny"
-            app:temperature="+9°"
-            app:timesOfDay="Afternoon" />
-
-        <com.weatherclothes.artist.presentation.customView.WeatherNightBlock
-            android:id="@+id/weatherNightBlock2"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_0dp"
-            android:layout_weight="1"
-            app:iconWeather="@drawable/icon_weather_sunny"
-            app:temperature="+9°"
-            app:timesOfDay="Afternoon" />
-
-        <com.weatherclothes.artist.presentation.customView.WeatherNightBlock
-            android:id="@+id/weatherNightBlock3"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/size_0dp"
-            android:layout_marginBottom="@dimen/margin_bottom"
-            android:layout_weight="1"
-            app:iconWeather="@drawable/icon_weather_sunny"
-            app:temperature="+9°"
-            app:timesOfDay="Afternoon" />
-
-    </LinearLayout>
+        app:layout_constraintTop_toBottomOf="@+id/barrierTop" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

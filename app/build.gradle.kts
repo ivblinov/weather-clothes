@@ -60,4 +60,7 @@ dependencies {
     // dagger:
     implementation(libs.dagger)
     kapt(libs.dagger.compiler)
+
+    // viewPager2:
+    implementation (libs.androidx.viewpager2)
 }

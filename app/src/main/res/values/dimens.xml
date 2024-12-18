@@ -4,8 +4,17 @@
     <dimen name="item_icon_size">34dp</dimen>
     <dimen name="bottom_menu_text_size">12sp</dimen>
     <dimen name="text_size_weather_night_block">16sp</dimen>
+    <dimen name="text_size_temperature">48sp</dimen>
 
     <dimen name="padding_horizontal">16dp</dimen>
     <dimen name="margin_start">16dp</dimen>
     <dimen name="margin_bottom">16dp</dimen>
+    <dimen name="margin_end">16dp</dimen>
+
+    <dimen name="tab_layout_text">12sp</dimen>
+
+    <dimen name="layout_margin_top_border">2dp</dimen>
+    <dimen name="margin_bottom_big_weather_icon">8dp</dimen>
+    <dimen name="margin_bottom_temper_block">40dp</dimen>
+    <dimen name="margin_top_title_pressure">12dp</dimen>
 </resources>

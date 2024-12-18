@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.screens.ViewPagerFragment">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/man"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/main_10_15"
+        app:layout_constraintBottom_toTopOf="@+id/timesOfDay"
+        app:layout_constraintEnd_toStartOf="@+id/paramBlock"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/city"
+        style="@style/TextMainAccentStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Minsk"
+        app:layout_constraintEnd_toEndOf="@+id/paramBlock"
+        app:layout_constraintStart_toStartOf="@+id/paramBlock"
+        app:layout_constraintTop_toTopOf="@+id/man" />
+
+    <LinearLayout
+        android:id="@+id/weatherStatusBlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="@+id/city"
+        app:layout_constraintStart_toStartOf="@+id/city"
+        app:layout_constraintBottom_toTopOf="@+id/temperatureBlock"
+        app:layout_constraintTop_toBottomOf="@+id/city">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bigWeatherIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_bottom_big_weather_icon"
+            android:src="@drawable/icon_weather_variable_cloudiness" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/weatherStatus"
+            style="@style/TextSecondaryStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Variable cloudiness" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/temperatureBlock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:layout_marginBottom="@dimen/margin_bottom_temper_block"
+        app:layout_constraintEnd_toEndOf="@+id/weatherStatusBlock"
+        app:layout_constraintBottom_toTopOf="@+id/paramBlock"
+        app:layout_constraintStart_toStartOf="@+id/weatherStatusBlock"
+        app:layout_constraintTop_toBottomOf="@+id/weatherStatusBlock">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/Text.Temperature"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+10°"
+            app:layout_constraintEnd_toEndOf="@+id/city"
+            app:layout_constraintStart_toStartOf="@+id/city"
+            app:layout_constraintTop_toBottomOf="@+id/weatherStatusBlock" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            style="@style/TextSecondaryStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Feels like 11°" />
+
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/paramBlock"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/margin_end"
+        app:layout_constraintBottom_toBottomOf="@+id/man"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleHumidity"
+            style="@style/TextSecondaryStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/humidity"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/humidityValue"
+            style="@style/TextSecAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="80%"
+            app:layout_constraintBottom_toBottomOf="@+id/titleHumidity"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/titleHumidity" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/borderLineTop"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            style="@style/BorderLineStyle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleHumidity" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titlePressure"
+            style="@style/TextSecondaryStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_top_title_pressure"
+            android:text="@string/pressure"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/borderLineTop" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/pressureValue"
+            style="@style/TextSecAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="760 mmHg"
+            app:layout_constraintBottom_toBottomOf="@+id/titlePressure"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/titlePressure" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/borderLineMiddle"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            style="@style/BorderLineStyle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titlePressure" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/titleWind"
+            style="@style/TextSecondaryStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/margin_top_title_pressure"
+            android:text="@string/wind"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/borderLineMiddle" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/windValue"
+            style="@style/TextSecAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SW 4 m/s"
+            app:layout_constraintBottom_toBottomOf="@+id/titleWind"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/titleWind" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/gustsValue"
+            style="@style/TextSecAccent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gusts 12 m/s"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/windValue" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/borderLineBottom"
+            style="@style/BorderLineStyle"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gustsValue" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.77" />
+
+    <LinearLayout
+        android:id="@+id/timesOfDay"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_0dp"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/padding_horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barrier">
+
+        <com.weatherclothes.artist.presentation.customView.WeatherNightBlock
+            android:id="@+id/weatherNightBlock1"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_0dp"
+            android:layout_weight="1"
+            app:iconWeather="@drawable/icon_weather_sunny"
+            app:temperature="+9°"
+            app:timesOfDay="Afternoon" />
+
+        <com.weatherclothes.artist.presentation.customView.WeatherNightBlock
+            android:id="@+id/weatherNightBlock2"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_0dp"
+            android:layout_weight="1"
+            app:iconWeather="@drawable/icon_weather_sunny"
+            app:temperature="+9°"
+            app:timesOfDay="Afternoon" />
+
+        <com.weatherclothes.artist.presentation.customView.WeatherNightBlock
+            android:id="@+id/weatherNightBlock3"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/size_0dp"
+            android:layout_marginBottom="@dimen/margin_bottom"
+            android:layout_weight="1"
+            app:iconWeather="@drawable/icon_weather_sunny"
+            app:temperature="+9°"
+            app:timesOfDay="Afternoon" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

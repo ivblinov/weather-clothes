@@ -18,7 +18,7 @@ class MainViewModel @AssistedInject constructor(
 
     fun loadWeather() {
         _mainState.value = MainState.Loading
-        Log.d(TAG, "loadWeather: ")
+//        Log.d(TAG, "loadWeather: ")
         _mainState.value = MainState.Success
     }
 

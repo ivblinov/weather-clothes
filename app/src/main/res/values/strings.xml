@@ -6,8 +6,11 @@
 
     <!--    <string name="main_fragment">Main Fragment</string>-->
     <string name="places_fragment">Places Fragment</string>
+    <string name="hello_blank_fragment">Permissions Fragment</string>
+
     <string name="humidity">Humidity</string>
     <string name="pressure">Pressure</string>
     <string name="wind">Wind</string>
+    <string name="your_location">Your location</string>
 
 </resources>

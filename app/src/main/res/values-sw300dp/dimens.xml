@@ -22,13 +22,13 @@
     <dimen name="margin_top_title_pressure">12dp</dimen>
 
     <!--  Main Fragment  -->
-    <dimen name="vertical_bias_barrier_top_main_fragment">0.07</dimen>
+    <dimen name="vertical_bias_barrier_top_main_fragment">0.1</dimen>
 
     <!--  Permission Fragment  -->
     <dimen name="radius_button">4dp</dimen>
-    <dimen name="grant_permission_button">41dp</dimen>
+    <dimen name="grant_permission_button">36dp</dimen>
     <dimen name="layout_margin_horizontal_button">16dp</dimen>
     <dimen name="layout_margin_horizontal_text_explanation">24dp</dimen>
-    <dimen name="vertical_bias_barrier">0.66</dimen>
+    <dimen name="vertical_bias_barrier">0.75</dimen>
 
 </resources>

@@ -7,22 +7,25 @@
     <style name="Theme.WeatherClothes_291024" parent="Base.Theme.WeatherClothes_291024">
         <item name="android:statusBarColor">@color/statusBar</item>
         <item name="android:navigationBarColor">@color/navigationBar</item>
+
+<!--        <item name="android:windowTranslucentStatus">false</item>-->
+<!--        <item name="android:windowTranslucentNavigation">false</item>-->
     </style>
 
     <style name="TextSecondaryStyle" parent="TextAppearance.AppCompat.Caption">
-        <item name="android:textSize">@dimen/bottom_menu_text_size</item>
+        <item name="android:textSize">@dimen/bottom_menu</item>
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/instrument_sans_regular</item>
     </style>
     
     <style name="TextSecAccent" parent="Text">
         <item name="android:fontFamily">@font/instrument_sans_semibold</item>
-        <item name="android:textSize">@dimen/bottom_menu_text_size</item>
+        <item name="android:textSize">@dimen/bottom_menu</item>
     </style>
 
     <style name="Text">
         <item name="android:fontFamily">@font/instrument_sans_regular</item>
-        <item name="android:textSize">@dimen/text_size_weather_night_block</item>
+        <item name="android:textSize">@dimen/weather_night_block</item>
         <item name="android:textColor">@color/textMain</item>
     </style>
 
@@ -31,7 +34,7 @@
     </style>
 
     <style name="Text.Temperature" parent="Text">
-        <item name="android:textSize">@dimen/text_size_temperature</item>
+        <item name="android:textSize">@dimen/temperature</item>
     </style>
 
     <style name="TabLayoutStyle" parent="Widget.Design.TabLayout">
@@ -49,5 +52,11 @@
     <style name="BorderLineStyle">
         <item name="android:background">@color/black</item>
         <item name="android:layout_marginTop">@dimen/layout_margin_top_border</item>
+    </style>
+
+    <style name="TextButton" parent="TextMainAccentStyle">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textColor">@color/tabTextColorWhite</item>
+        <item name="android:background">@drawable/bg_round_button</item>
     </style>
 </resources>

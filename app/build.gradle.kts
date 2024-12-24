@@ -63,4 +63,7 @@ dependencies {
 
     // viewPager2:
     implementation (libs.androidx.viewpager2)
+
+    // com.google.android.gms:
+    implementation(libs.services.location)
 }

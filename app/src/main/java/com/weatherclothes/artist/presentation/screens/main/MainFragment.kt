@@ -17,6 +17,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationTokenSource
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.weatherclothes.artist.R
@@ -36,15 +39,21 @@ class MainFragment : Fragment() {
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewPager: ViewPager2
-    private lateinit var tabLayout: TabLayout
-    private lateinit var adapter: WeatherLocationViewPagerAdapter
+    @Inject
+    lateinit var fusedClient: FusedLocationProviderClient
+
+    @Inject
+    lateinit var cancellationSource: CancellationTokenSource
 
     @Inject
     lateinit var prefsPermission: SharedPreferences
 
     @Inject
     lateinit var prefsEditor: SharedPreferences.Editor
+
+    private lateinit var viewPager: ViewPager2
+    private lateinit var tabLayout: TabLayout
+    private lateinit var adapter: WeatherLocationViewPagerAdapter
 
     val viewModel: MainViewModel by lazyViewModel {
         requireContext().appComponent().mainViewModel().create()
@@ -53,7 +62,7 @@ class MainFragment : Fragment() {
     private val launcher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
     ) { map ->
-        if (map.values.isNotEmpty() && map.values.all { it } && checkGeolocation()) {
+        if (map.values.isNotEmpty() && map.values.all { it } && checkGPSEnabled()) {
             onPermissionsGranted()
         } else {
             onPermissionsDenied()
@@ -80,6 +89,8 @@ class MainFragment : Fragment() {
         tabLayout = binding.tabLayout
         adapter = WeatherLocationViewPagerAdapter(this.requireActivity())
 
+        subscribe()
+
         val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
         checkFirstLogin(permissionRequested)
 
@@ -101,8 +112,6 @@ class MainFragment : Fragment() {
                 adapter.addFragment(ViewPagerFragment(), "Tab $newTabIndex")
                 viewPager.currentItem = adapter.itemCount - 1*/
 
-        subscribe()
-        viewModel.loadWeather()
     }
 
     override fun onDestroyView() {
@@ -167,19 +176,53 @@ class MainFragment : Fragment() {
         })
     }
 
-    private fun checkGeolocation(): Boolean {
+    private fun checkGPSEnabled(): Boolean {
         val locationManager =
             requireContext().getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val enabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
         return enabled
     }
 
+    private fun getLocation() {
+        if (checkGPSEnabled()) {
+            if (checkPermissions()) {
+                requestLocation(fusedClient, cancellationSource)
+            }
+        } else {
+            Log.d(TAG, "GPS выключен")
+        }
+    }
+
     private fun onPermissionsGranted() {
+        getLocation()
         adapter.addFragment(ViewPagerFragment(), getString(R.string.your_location))
     }
 
     private fun onPermissionsDenied() {
         adapter.addFragment(PermissionsFragment(), getString(R.string.your_location))
+    }
+
+    private fun requestLocation(
+        fusedClient: FusedLocationProviderClient,
+        cancellationSource: CancellationTokenSource
+    ) {
+        try {
+            val result = fusedClient.getCurrentLocation(
+                Priority.PRIORITY_HIGH_ACCURACY,
+                cancellationSource.token
+            )
+            result.addOnSuccessListener {
+                Log.d(TAG, "getLocation: latitude = ${it.latitude}")
+                Log.d(TAG, "getLocation: longitude = ${it.longitude}")
+
+                viewModel.loadWeatherOfCurrentLocation(
+                    latitude = it.latitude,
+                    longitude = it.longitude
+                )
+            }
+        } catch (e: SecurityException) {
+            Log.d(TAG, "getLocation: exception = $e")
+        }
     }
 
     companion object {

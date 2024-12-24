@@ -6,11 +6,15 @@
 
     <!--    <string name="main_fragment">Main Fragment</string>-->
     <string name="places_fragment">Places Fragment</string>
-    <string name="hello_blank_fragment">Permissions Fragment</string>
 
     <string name="humidity">Humidity</string>
     <string name="pressure">Pressure</string>
     <string name="wind">Wind</string>
     <string name="your_location">Your location</string>
+
+    <!--  Permission Fragment  -->
+    <string name="text_explanation_for_user">To provide personalized weather updates for your area, we need access to your location. You can grant permission now or manually select a location.</string>
+    <string name="grant_permission_button">Grant permission</string>
+    <string name="we_need_your_location">We Need Your Location</string>
 
 </resources>

@@ -1,7 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kapt)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -49,21 +49,29 @@ dependencies {
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
+    // com.google.android.gms:
+    implementation(libs.services.location)
+
+    // dagger:
+    implementation(libs.dagger)
+    ksp(libs.dagger.compiler)
+
+    // Moshi:
+    implementation(libs.moshi)
+    implementation(libs.moshi.converter)
+    ksp(libs.moshi.kotlin.codegen)
+
+    // navigation:
+    implementation(libs.bundles.navigation)
+
+    // Retrofit:
+    implementation(libs.retrofit)
+
     // tests:
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
-    // navigation:
-    implementation(libs.bundles.navigation)
-
-    // dagger:
-    implementation(libs.dagger)
-    kapt(libs.dagger.compiler)
-
     // viewPager2:
     implementation (libs.androidx.viewpager2)
-
-    // com.google.android.gms:
-    implementation(libs.services.location)
 }

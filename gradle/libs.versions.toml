@@ -9,9 +9,12 @@ espressoCore = "3.6.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 kotlin = "2.1.0"
+ksp = "2.1.0-1.0.29"
 location = "21.3.0"
 material = "1.12.0"
+moshi = "1.15.1"
 navigation = "2.8.5"
+retrofit = "2.9.0"
 viewpager2 = "1.1.0"
 
 [libraries]
@@ -26,14 +29,18 @@ dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" 
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+moshi = { module = "com.squareup.moshi:moshi", version.ref = "moshi" }
+moshi-converter = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
+moshi-kotlin-codegen = { module = "com.squareup.moshi:moshi-kotlin-codegen", version.ref = "moshi" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigation"}
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigation"}
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "location" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 [bundles]
 navigation = ["navigation-fragment", "navigation-ui"]

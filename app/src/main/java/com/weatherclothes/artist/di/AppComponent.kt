@@ -3,6 +3,7 @@ package com.weatherclothes.artist.di
 import android.app.Application
 import com.weatherclothes.artist.di.modules.AppModule
 import com.weatherclothes.artist.di.modules.LocationModule
+import com.weatherclothes.artist.di.modules.NetworkModule
 import com.weatherclothes.artist.di.modules.SharedPreferencesModule
 import com.weatherclothes.artist.presentation.screens.main.MainFragment
 import com.weatherclothes.artist.presentation.screens.main.MainViewModel
@@ -15,7 +16,8 @@ import javax.inject.Singleton
     modules = [
         SharedPreferencesModule::class,
         AppModule::class,
-        LocationModule::class
+        LocationModule::class,
+        NetworkModule::class
     ]
 )
 interface AppComponent {

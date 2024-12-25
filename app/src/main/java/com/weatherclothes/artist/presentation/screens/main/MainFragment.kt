@@ -91,9 +91,6 @@ class MainFragment : Fragment() {
 
         subscribe()
 
-        val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
-        checkFirstLogin(permissionRequested)
-
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -106,6 +103,9 @@ class MainFragment : Fragment() {
 //            }
 //            tabLayout.selectTab(tab, true)
         }.attach()
+
+        val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
+        checkFirstLogin(permissionRequested)
 
         // добавление новых табов
         /*        val newTabIndex = adapter.itemCount + 1
@@ -194,11 +194,14 @@ class MainFragment : Fragment() {
     }
 
     private fun onPermissionsGranted() {
+        Log.d(TAG, "onPermissionsGranted: ")
         getLocation()
         adapter.addFragment(ViewPagerFragment(), getString(R.string.your_location))
     }
 
     private fun onPermissionsDenied() {
+        Log.d(TAG, "onPermissionsDenied: ")
+        Log.d(TAG, "adapter = $adapter")
         adapter.addFragment(PermissionsFragment(), getString(R.string.your_location))
     }
 
@@ -206,19 +209,23 @@ class MainFragment : Fragment() {
         fusedClient: FusedLocationProviderClient,
         cancellationSource: CancellationTokenSource
     ) {
+        Log.d(TAG, "fusedClient = $fusedClient")
+        Log.d(TAG, "cancellation = $cancellationSource")
         try {
             val result = fusedClient.getCurrentLocation(
                 Priority.PRIORITY_HIGH_ACCURACY,
                 cancellationSource.token
             )
+            Log.d(TAG, "result = $result")
             result.addOnSuccessListener {
-                Log.d(TAG, "getLocation: latitude = ${it.latitude}")
-                Log.d(TAG, "getLocation: longitude = ${it.longitude}")
-
+                Log.d(TAG, "requestLocation: ")
                 viewModel.loadWeatherOfCurrentLocation(
                     latitude = it.latitude,
                     longitude = it.longitude
                 )
+            }
+            result.addOnFailureListener {
+                Log.d(TAG, "fail $it")
             }
         } catch (e: SecurityException) {
             Log.d(TAG, "getLocation: exception = $e")

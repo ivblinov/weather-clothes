@@ -2,16 +2,20 @@ package com.weatherclothes.artist.presentation.screens.main
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
-import com.weatherclothes.artist.data.Repository
+import androidx.lifecycle.viewModelScope
+import com.weatherclothes.artist.domain.CurrentWeatherInteractor
 import com.weatherclothes.artist.presentation.states.MainState
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 private const val TAG = "MyLog"
+
 class MainViewModel @AssistedInject constructor(
-    private val repository: Repository
+    private val interactor: CurrentWeatherInteractor
 ) : ViewModel() {
 
     private val _mainState = MutableStateFlow<MainState>(MainState.Success)
@@ -21,9 +25,17 @@ class MainViewModel @AssistedInject constructor(
         latitude: Double,
         longitude: Double
     ) {
-        _mainState.value = MainState.Loading
-//        Log.d(TAG, "loadWeather: ")
-        _mainState.value = MainState.Success
+        Log.d(TAG, "loadWeatherOfCurrentLocation: ")
+        viewModelScope.launch(Dispatchers.IO) {
+            _mainState.value = MainState.Loading
+            Log.d(TAG, "currentResult")
+//            val currentResult = interactor.loadWeatherOfCurrentLocation(
+//                latitude = latitude,
+//                longitude = longitude
+//            )
+//            Log.d(TAG, "currentResult = $currentResult")
+            _mainState.value = MainState.Success
+        }
     }
 
     @AssistedFactory

@@ -8,7 +8,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
-private const val BASE_URL = "https://api.weatherapi.com/v1"
+private const val BASE_URL = "https://api.weatherapi.com/"
 
 @Module
 class NetworkModule {

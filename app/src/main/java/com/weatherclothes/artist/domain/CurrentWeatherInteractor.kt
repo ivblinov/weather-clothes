@@ -1,12 +1,10 @@
 package com.weatherclothes.artist.domain
 
-import android.util.Log
 import com.weatherclothes.artist.data.Repository
-import com.weatherclothes.artist.data.models_dto.CurrentWeatherDto
+import com.weatherclothes.artist.domain.models.CurrentWeather
 import javax.inject.Inject
 import javax.inject.Singleton
 
-private const val TAG = "MyLog"
 @Singleton
 class CurrentWeatherInteractor @Inject constructor(
     private val repository: Repository
@@ -14,8 +12,7 @@ class CurrentWeatherInteractor @Inject constructor(
     suspend fun loadWeatherOfCurrentLocation(
         latitude: Double,
         longitude: Double
-    ): CurrentWeatherDto {
-        Log.d(TAG, "loadWeatherOfCurrentLocation: ")
+    ): CurrentWeather? {
         return repository.loadWeatherOfCurrentLocation(
             latitude = latitude,
             longitude = longitude

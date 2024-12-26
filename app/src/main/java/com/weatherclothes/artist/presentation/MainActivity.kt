@@ -30,7 +30,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-            Log.d(TAG, "version = 35")
 
             window.statusBarColor = this.getColor(R.color.statusBar)
 
@@ -43,8 +42,6 @@ class MainActivity : AppCompatActivity() {
                 insets
             }
 
-        } else {
-            Log.d(TAG, "version < 35")
         }
 
 //        window.decorView.setOnApplyWindowInsetsListener(null)

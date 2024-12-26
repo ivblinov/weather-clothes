@@ -1,18 +1,21 @@
 package com.weatherclothes.artist.data
 
 import com.weatherclothes.artist.data.api.WeatherService
-import com.weatherclothes.artist.data.models_dto.CurrentWeatherDto
+import com.weatherclothes.artist.data.mappers.CurrentWeatherMapper
+import com.weatherclothes.artist.domain.models.CurrentWeather
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class Repository @Inject constructor(
-    private val weatherService: WeatherService
+    private val weatherService: WeatherService,
+    private val mapper: CurrentWeatherMapper
 ) {
     suspend fun loadWeatherOfCurrentLocation(
         latitude: Double,
-        longitude: Double): CurrentWeatherDto {
+        longitude: Double): CurrentWeather? {
         val q = "$latitude,$longitude"
-        return weatherService.getWeather(q = q)
+        val response = weatherService.getWeather(q = q)
+        return mapper.mapToDomain(response.body())
     }
 }

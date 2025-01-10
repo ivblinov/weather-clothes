@@ -4,9 +4,11 @@ import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -72,6 +74,15 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         inject()
+
+        val typedValue = TypedValue()
+        requireContext().theme.resolveAttribute(android.R.attr.theme, typedValue, true)
+        val currentTheme = typedValue.resourceId
+
+        if (currentTheme == R.style.LoadTheme) {
+            requireActivity().setTheme(R.style.Theme_WeatherClothes_291024)
+            requireActivity().recreate()
+        }
     }
 
     override fun onCreateView(
@@ -204,6 +215,11 @@ class MainFragment : Fragment() {
         cancellationSource: CancellationTokenSource
     ) {
         try {
+            fusedClient.lastLocation.addOnSuccessListener { location ->
+                if (location != null) {
+                    Log.d(TAG, "lastLocation = $location")
+                }
+            }
             val result = fusedClient.getCurrentLocation(
                 Priority.PRIORITY_BALANCED_POWER_ACCURACY,
                 cancellationSource.token

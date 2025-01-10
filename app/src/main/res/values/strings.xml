@@ -12,6 +12,10 @@
     <string name="wind">Wind</string>
     <string name="your_location">Your location</string>
 
+    <!--  Load Fragment  -->
+    <string name="weather">weather</string>
+    <string name="clothes">clothes</string>
+
     <!--  Permission Fragment  -->
     <string name="text_explanation_for_user">To provide personalized weather updates for your area, we need access to your location. You can grant permission now or manually select a location.</string>
     <string name="grant_permission_button">Grant permission</string>

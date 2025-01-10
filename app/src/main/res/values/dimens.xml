@@ -7,6 +7,7 @@
     <dimen name="temperature">48sp</dimen>
     <dimen name="tab_layout">12sp</dimen>
     <dimen name="we_need_your_location">20sp</dimen>
+    <dimen name="text_load_screen">24sp</dimen>
 
     <dimen name="size_0dp">0dp</dimen>
 
@@ -20,6 +21,9 @@
     <dimen name="margin_bottom_big_weather_icon">8dp</dimen>
     <dimen name="margin_bottom_temper_block">40dp</dimen>
     <dimen name="margin_top_title_pressure">12dp</dimen>
+
+    <!--  Load Fragment  -->
+    <dimen name="scale_item">1.5F</dimen>
 
     <!--  Main Fragment  -->
     <dimen name="vertical_bias_barrier_top_main_fragment">0.07</dimen>

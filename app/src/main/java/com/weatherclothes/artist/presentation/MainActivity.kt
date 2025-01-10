@@ -2,14 +2,11 @@ package com.weatherclothes.artist.presentation
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.WindowInsetsController
-import android.view.WindowManager
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.updatePadding
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
@@ -29,20 +26,20 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-
-            window.statusBarColor = this.getColor(R.color.statusBar)
-
-            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-                v.setPadding(0, systemBars.top, 0, 0)
-
-//                v.updatePadding(top = insets.systemWindowInsetTop)
-
-                insets
-            }
-
-        }
+//        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.VANILLA_ICE_CREAM) {
+//
+//            window.statusBarColor = this.getColor(R.color.statusBar)
+//
+//            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+//                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+//                v.setPadding(0, systemBars.top, 0, 0)
+//
+////                v.updatePadding(top = insets.systemWindowInsetTop)
+//
+//                insets
+//            }
+//
+//        }
 
 //        window.decorView.setOnApplyWindowInsetsListener(null)
 

@@ -12,6 +12,13 @@
 <!--        <item name="android:windowTranslucentNavigation">false</item>-->
     </style>
 
+    <style name="LoadTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/ic_load_screen_bg</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+<!--        <item name="enableEdgeToEdge">true</item>-->
+    </style>
+
     <style name="TextSecondaryStyle" parent="TextAppearance.AppCompat.Caption">
         <item name="android:textSize">@dimen/bottom_menu</item>
         <item name="android:textStyle">normal</item>
@@ -31,6 +38,17 @@
 
     <style name="TextMainAccentStyle" parent="Text">
         <item name="android:fontFamily">@font/instrument_sans_bold</item>
+    </style>
+
+    <style name="TextLoadScreenStyle">
+        <item name="fontFamily">@font/instrument_sans_regular</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_load_screen</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="TextLoadScreenStyle.Bold" parent="TextLoadScreenStyle">
+        <item name="fontFamily">@font/instrument_sans_bold</item>
     </style>
 
     <style name="Text.Temperature" parent="Text">

@@ -10,7 +10,7 @@
         android:id="@+id/man"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/main_10_15"
+        android:src="@drawable/man_10_15"
         app:layout_constraintBottom_toTopOf="@+id/timesOfDay"
         app:layout_constraintEnd_toStartOf="@+id/paramBlock"
         app:layout_constraintStart_toStartOf="parent"

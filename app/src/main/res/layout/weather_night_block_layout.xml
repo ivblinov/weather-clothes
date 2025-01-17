@@ -27,7 +27,7 @@
         android:id="@+id/iconWeather"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/icon_weather_sunny"
+        android:src="@drawable/ic_small_sunny"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/barrier"
         app:layout_constraintTop_toTopOf="parent" />

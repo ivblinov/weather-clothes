@@ -4,11 +4,9 @@ import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.location.LocationManager
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +14,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.viewpager2.widget.ViewPager2
@@ -26,11 +25,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentMainBinding
-import com.weatherclothes.artist.presentation.screens.ViewPagerFragment
 import com.weatherclothes.artist.presentation.screens.permissions.PermissionsFragment
 import com.weatherclothes.artist.presentation.states.MainState
+import com.weatherclothes.artist.utils.ViewModelFactory
 import com.weatherclothes.artist.utils.appComponent
-import com.weatherclothes.artist.utils.lazyViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -57,9 +55,9 @@ class MainFragment : Fragment() {
     private lateinit var tabLayout: TabLayout
     private lateinit var adapter: WeatherLocationViewPagerAdapter
 
-    val viewModel: MainViewModel by lazyViewModel {
-        requireContext().appComponent().mainViewModel().create()
-    }
+    private var viewModel: MainViewModel? = null
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
 
     private val launcher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -74,21 +72,14 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         inject()
-
-        val typedValue = TypedValue()
-        requireContext().theme.resolveAttribute(android.R.attr.theme, typedValue, true)
-        val currentTheme = typedValue.resourceId
-
-        if (currentTheme == R.style.LoadTheme) {
-            requireActivity().setTheme(R.style.Theme_WeatherClothes_291024)
-            requireActivity().recreate()
-        }
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        viewModel =
+            ViewModelProvider(requireActivity(), viewModelFactory)[MainViewModel::class.java]
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -102,6 +93,9 @@ class MainFragment : Fragment() {
 
         subscribe()
 
+        val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
+        checkFirstLogin(permissionRequested)
+
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
@@ -114,9 +108,6 @@ class MainFragment : Fragment() {
 //            }
 //            tabLayout.selectTab(tab, true)
         }.attach()
-
-        val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
-        checkFirstLogin(permissionRequested)
 
         // добавление новых табов
         /*        val newTabIndex = adapter.itemCount + 1
@@ -138,7 +129,7 @@ class MainFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 launch {
-                    viewModel.mainState.collect { state ->
+                    viewModel?.mainState?.collect { state ->
                         when (state) {
                             MainState.Loading -> {}
                             MainState.Success -> {}
@@ -160,7 +151,6 @@ class MainFragment : Fragment() {
             val checkPermissions = checkPermissions()
             if (checkPermissions) {
                 onPermissionsGranted()
-                // запрашиваем координаты
             } else {
                 onPermissionsDenied()
             }
@@ -218,20 +208,24 @@ class MainFragment : Fragment() {
             fusedClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
                     Log.d(TAG, "lastLocation = $location")
+                    viewModel?.loadWeatherOfCurrentLocation(
+                        latitude = location.latitude,
+                        longitude = location.longitude
+                    )
                 }
             }
+            Log.d(TAG, "requestLocation: start")
             val result = fusedClient.getCurrentLocation(
                 Priority.PRIORITY_BALANCED_POWER_ACCURACY,
                 cancellationSource.token
             )
-            Log.d(TAG, "requestLocation: Start")
             result.addOnSuccessListener {
-                Log.d(TAG, "requestLocation: End")
-                viewModel.loadWeatherOfCurrentLocation(
+                viewModel?.loadWeatherOfCurrentLocation(
                     latitude = it.latitude,
                     longitude = it.longitude
                 )
             }
+            Log.d(TAG, "requestLocation: end")
         } catch (e: SecurityException) {
             Log.d(TAG, "getLocation: exception = $e")
         }

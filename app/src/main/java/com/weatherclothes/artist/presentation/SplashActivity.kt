@@ -13,16 +13,23 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.animation.addListener
 import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.ActivitySplashBinding
+import com.weatherclothes.artist.utils.appComponent
 
 @SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
     lateinit var binding: ActivitySplashBinding
 
+//    val viewModel: MainViewModel by lazyViewModel {
+//        appComponent().mainViewModel().create()
+//    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+//        inject()
 
         animateLoadScreen()
         animateItem(R.animator.animate_sun, binding.sunIV)
@@ -42,6 +49,10 @@ class SplashActivity : AppCompatActivity() {
         )
         animator.start()
     }
+
+//    fun inject() {
+//        this.appComponent().inject(this)
+//    }
 
     fun animateItem(res: Int, animateView: View) {
         val animator = AnimatorInflater.loadAnimator(

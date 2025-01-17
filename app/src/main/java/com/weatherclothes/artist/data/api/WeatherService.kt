@@ -14,6 +14,7 @@ interface WeatherService {
     @GET("/v1/forecast.json")
     suspend fun getWeather(
         @Query("q") q: String,
-        @Query("days") days: Int = 1
+        @Query("days") days: Int = 1,
+        @Query("lang") lang: String = "en"
     ): Response<CurrentWeatherDto>
 }

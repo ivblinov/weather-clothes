@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.screens.ViewPagerFragment">
+    tools:context=".presentation.screens.main.ViewPagerFragment">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/man"
@@ -21,20 +21,19 @@
         style="@style/TextMainAccentStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Minsk"
         app:layout_constraintEnd_toEndOf="@+id/paramBlock"
         app:layout_constraintStart_toStartOf="@+id/paramBlock"
         app:layout_constraintTop_toTopOf="@+id/man" />
 
     <LinearLayout
         android:id="@+id/weatherStatusBlock"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="@+id/city"
-        app:layout_constraintStart_toStartOf="@+id/city"
         app:layout_constraintBottom_toTopOf="@+id/temperatureBlock"
+        app:layout_constraintEnd_toEndOf="@+id/paramBlock"
+        app:layout_constraintStart_toStartOf="@+id/paramBlock"
         app:layout_constraintTop_toBottomOf="@+id/city">
 
         <androidx.appcompat.widget.AppCompatImageView
@@ -42,14 +41,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_bottom_big_weather_icon"
-            android:src="@drawable/icon_weather_variable_cloudiness" />
+            android:src="@drawable/ic_big_partly_cloudy" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/weatherStatus"
             style="@style/TextSecondaryStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Variable cloudiness" />
+            android:gravity="center_horizontal"
+            android:text="Moderate or heavy showers of ice pellets" />
 
     </LinearLayout>
 
@@ -57,15 +57,16 @@
         android:id="@+id/temperatureBlock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_bottom_temper_block"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginBottom="@dimen/margin_bottom_temper_block"
-        app:layout_constraintEnd_toEndOf="@+id/weatherStatusBlock"
         app:layout_constraintBottom_toTopOf="@+id/paramBlock"
+        app:layout_constraintEnd_toEndOf="@+id/weatherStatusBlock"
         app:layout_constraintStart_toStartOf="@+id/weatherStatusBlock"
         app:layout_constraintTop_toBottomOf="@+id/weatherStatusBlock">
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/temperature"
             style="@style/Text.Temperature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -75,6 +76,7 @@
             app:layout_constraintTop_toBottomOf="@+id/weatherStatusBlock" />
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/feelsTemperature"
             style="@style/TextSecondaryStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -111,9 +113,9 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/borderLineTop"
+            style="@style/BorderLineStyle"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            style="@style/BorderLineStyle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleHumidity" />
@@ -140,9 +142,9 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/borderLineMiddle"
+            style="@style/BorderLineStyle"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            style="@style/BorderLineStyle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titlePressure" />
@@ -215,7 +217,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_0dp"
             android:layout_weight="1"
-            app:iconWeather="@drawable/icon_weather_sunny"
+            app:iconWeather="@drawable/ic_small_sunny"
             app:temperature="+9°"
             app:timesOfDay="Afternoon" />
 
@@ -224,7 +226,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/size_0dp"
             android:layout_weight="1"
-            app:iconWeather="@drawable/icon_weather_sunny"
+            app:iconWeather="@drawable/ic_small_sunny"
             app:temperature="+9°"
             app:timesOfDay="Afternoon" />
 
@@ -234,7 +236,7 @@
             android:layout_height="@dimen/size_0dp"
             android:layout_marginBottom="@dimen/margin_bottom"
             android:layout_weight="1"
-            app:iconWeather="@drawable/icon_weather_sunny"
+            app:iconWeather="@drawable/ic_small_sunny"
             app:temperature="+9°"
             app:timesOfDay="Afternoon" />
 

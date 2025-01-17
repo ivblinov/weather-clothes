@@ -7,4 +7,5 @@ import com.squareup.moshi.JsonClass
 data class CurrentWeatherDto(
     @Json(name = "location") val location: LocationDto,
     @Json(name = "current") val current: CurrentDto,
+    @Json(name = "forecast") val forecast: ForecastDto,
 )

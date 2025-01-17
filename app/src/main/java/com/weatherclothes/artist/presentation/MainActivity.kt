@@ -1,50 +1,35 @@
 package com.weatherclothes.artist.presentation
 
-import android.os.Build
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.ActivityMainBinding
+import com.weatherclothes.artist.presentation.screens.main.MainViewModel
+import com.weatherclothes.artist.utils.ViewModelFactory
+import com.weatherclothes.artist.utils.appComponent
+import javax.inject.Inject
 
-private const val TAG = "MyLog"
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
     private var navController: NavController? = null
 
+    @Inject lateinit var viewModelFactory: ViewModelFactory
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        enableEdgeToEdge()
+
+        inject()
+
+        val viewModel = ViewModelProvider(this, viewModelFactory)[MainViewModel::class.java]
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-//        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.VANILLA_ICE_CREAM) {
-//
-//            window.statusBarColor = this.getColor(R.color.statusBar)
-//
-//            ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-//                val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-//                v.setPadding(0, systemBars.top, 0, 0)
-//
-////                v.updatePadding(top = insets.systemWindowInsetTop)
-//
-//                insets
-//            }
-//
-//        }
-
-//        window.decorView.setOnApplyWindowInsetsListener(null)
-
-//        window.insetsController?.systemBarsBehavior =
-//            WindowInsetsController.BEHAVIOR_SHOW_BARS_BY_TOUCH
 
         navController =
             (supportFragmentManager.findFragmentById(R.id.fragment_container) as NavHostFragment).navController
@@ -52,5 +37,9 @@ class MainActivity : AppCompatActivity() {
         navController?.let {
             binding.bottomNav.setupWithNavController(it)
         }
+    }
+
+    fun inject() {
+        appComponent().inject(this)
     }
 }

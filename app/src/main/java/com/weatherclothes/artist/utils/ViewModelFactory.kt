@@ -1,19 +1,20 @@
 package com.weatherclothes.artist.utils
 
-import androidx.lifecycle.AbstractSavedStateViewModelFactory
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.savedstate.SavedStateRegistryOwner
+import androidx.lifecycle.ViewModelProvider
+import com.weatherclothes.artist.presentation.screens.main.MainViewModel
+import javax.inject.Inject
 
-class ViewModelFactory<T : ViewModel>(
-    savedStateRegistryOwner: SavedStateRegistryOwner,
-    private val create: (stateHandle: SavedStateHandle) -> T
-) : AbstractSavedStateViewModelFactory(savedStateRegistryOwner, null) {
+class ViewModelFactory @Inject constructor(
+    private val factory: MainViewModel.Factory
+) : ViewModelProvider.Factory {
 
-    @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel> create(
-        key: String, modelClass: Class<T>, handle: SavedStateHandle
-    ): T {
-        return create.invoke(handle) as T
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return factory.create(SavedStateHandle()) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

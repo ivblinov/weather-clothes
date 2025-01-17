@@ -6,13 +6,15 @@ import javax.inject.Inject
 
 class CurrentWeatherMapper @Inject constructor(
     private val locationMapper: LocationMapper,
-    private val currentMapper: CurrentMapper
+    private val currentMapper: CurrentMapper,
+    private val forecastMapper: ForecastMapper,
 ) {
 
     fun mapToDomain(currentWeatherDto: CurrentWeatherDto?): CurrentWeather? = currentWeatherDto?.let {
         CurrentWeather(
             location = locationMapper.mapLocationToDomain(it.location),
             current = currentMapper.mapCurrentToDomain(it.current),
+            forecast = forecastMapper.mapForecastToDomain(it.forecast),
         )
     }
 }

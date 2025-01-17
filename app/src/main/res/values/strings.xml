@@ -7,10 +7,15 @@
     <!--    <string name="main_fragment">Main Fragment</string>-->
     <string name="places_fragment">Places Fragment</string>
 
+    <!--  ViewPagerFragment  -->
     <string name="humidity">Humidity</string>
     <string name="pressure">Pressure</string>
     <string name="wind">Wind</string>
     <string name="your_location">Your location</string>
+    <string name="morning">Morning</string>
+    <string name="afternoon">Afternoon</string>
+    <string name="evening">Evening</string>
+    <string name="night">Night</string>
 
     <!--  Load Fragment  -->
     <string name="weather">weather</string>

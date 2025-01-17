@@ -9,13 +9,14 @@ import javax.inject.Singleton
 @Singleton
 class Repository @Inject constructor(
     private val weatherService: WeatherService,
-    private val mapper: CurrentWeatherMapper
+    private val mapper: CurrentWeatherMapper,
 ) {
     suspend fun loadWeatherOfCurrentLocation(
         latitude: Double,
-        longitude: Double): CurrentWeather? {
+        longitude: Double
+    ): CurrentWeather? {
         val q = "$latitude,$longitude"
-        val response = weatherService.getWeather(q = q)
+        val response = weatherService.getWeather(q = q, days = 2)
         return mapper.mapToDomain(response.body())
     }
 }

@@ -8,7 +8,8 @@ class LocationMapper @Inject constructor() {
 
     fun mapLocationToDomain(locationDto: LocationDto): Location = with(locationDto) {
         Location(
-            name = name
+            name = name,
+            localHour = localTime.substring(11..12).toInt(),
         )
     }
 }

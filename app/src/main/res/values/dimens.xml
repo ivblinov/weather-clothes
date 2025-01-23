@@ -15,7 +15,7 @@
     <dimen name="item_icon_size">34dp</dimen>
     <dimen name="padding_horizontal">16dp</dimen>
     <dimen name="margin_start">16dp</dimen>
-    <dimen name="margin_bottom">16dp</dimen>
+    <dimen name="margin_bottom">8dp</dimen>
     <dimen name="margin_end">16dp</dimen>
     <dimen name="layout_margin_top_border">2dp</dimen>
     <dimen name="margin_bottom_big_weather_icon">8dp</dimen>

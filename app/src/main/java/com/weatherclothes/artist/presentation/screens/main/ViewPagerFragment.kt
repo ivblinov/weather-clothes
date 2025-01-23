@@ -2,7 +2,6 @@ package com.weatherclothes.artist.presentation.screens.main
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,8 +21,6 @@ import com.weatherclothes.artist.utils.WeatherConditions
 import com.weatherclothes.artist.utils.appComponent
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-private const val TAG = "MyLog"
 
 class ViewPagerFragment : Fragment() {
 
@@ -76,6 +73,7 @@ class ViewPagerFragment : Fragment() {
                                 MainState.Success -> {
                                     vm.weather?.let { setCurrentWeather(it) }
                                     setHourWeather()
+                                    setManImage()
                                 }
                             }
                         }
@@ -85,9 +83,14 @@ class ViewPagerFragment : Fragment() {
         }
     }
 
-    private fun setHourWeather() {
-        Log.d(TAG, "paramHour1 = ${viewModel?.paramHour1}")
+    private fun setManImage() {
+        viewModel?.manImage?.let {
+            binding.man.setImageResource(it)
+            binding.man.visibility = View.VISIBLE
+        }
+    }
 
+    private fun setHourWeather() {
         viewModel?.let { vm ->
             vm.weather?.let { weather ->
                 setTemperature(binding.weatherNightBlock1.temperature, weather, vm.paramDay1, vm.paramHour1)
@@ -96,6 +99,7 @@ class ViewPagerFragment : Fragment() {
                 setSmallIconWeather(binding.weatherNightBlock1.iconWeather, weather, vm.paramDay1, vm.paramHour1)
                 setSmallIconWeather(binding.weatherNightBlock2.iconWeather, weather, vm.paramDay2, vm.paramHour2)
                 setSmallIconWeather(binding.weatherNightBlock3.iconWeather, weather, vm.paramDay3, vm.paramHour3)
+                binding.timesOfDay.visibility = View.VISIBLE
             }
             binding.weatherNightBlock1.timesOfDay?.text = setTimesOfDay(vm.paramHour1)
             binding.weatherNightBlock2.timesOfDay?.text = setTimesOfDay(vm.paramHour2)
@@ -104,7 +108,6 @@ class ViewPagerFragment : Fragment() {
     }
 
     private fun setCurrentWeather(weather: CurrentWeather) {
-
         var temperature = "${weather.current.tempC}°"
         if (weather.current.tempC > 0) temperature = "+$temperature"
         val feelsTemperature = "Feels like ${weather.current.feelsLikeC}°"
@@ -112,11 +115,24 @@ class ViewPagerFragment : Fragment() {
         val pressure = "${weather.current.pressureMmHg} mmHg"
         val wind = "${weather.current.windDir} ${weather.current.windMs} m/s"
         val gusts = "Gusts ${weather.current.gustMs} m/s"
+        val sunrise = weather.forecast.forecastDay[0].astro.sunrise
+        val sunset = weather.forecast.forecastDay[0].astro.sunset
 
         binding.city.text = weather.location.name
         binding.weatherStatus.text =
-            WeatherConditions.getDescription(weather.current.condition.code, weather.location.localHour)
-        WeatherConditions.getBigIcon(weather.current.condition.code, weather.location.localHour)?.let {
+            WeatherConditions.getDescription(
+                weather.current.condition.code,
+                weather.location.localHour,
+                sunrise,
+                sunset
+            )
+        WeatherConditions.getBigIcon(
+            weather.current.condition.code,
+            weather.location.localHour,
+            weather.current.tempC,
+            sunrise,
+            sunset,
+        )?.let {
             binding.bigWeatherIcon.setImageResource(it)
         }
         binding.temperature.text = temperature
@@ -125,11 +141,14 @@ class ViewPagerFragment : Fragment() {
         binding.pressureValue.text = pressure
         binding.windValue.text = wind
         binding.gustsValue.text = gusts
+
+        binding.city.visibility = View.VISIBLE
+        binding.weatherStatusBlock.visibility = View.VISIBLE
+        binding.temperatureBlock.visibility = View.VISIBLE
+        binding.paramBlock.visibility = View.VISIBLE
     }
 
     private fun setTemperature(block: AppCompatTextView?, currentWeather: CurrentWeather, paramDay: Int, paramHour: Int) {
-        Log.d(TAG, "setTemperature: paramDay = $paramDay")
-        Log.d(TAG, "setTemperature: hour.size = ${currentWeather.forecast.forecastDay[paramDay].hour.size}")
         val temperature = currentWeather.forecast.forecastDay[paramDay].hour[paramHour].tempC
         val tempForPrint = if (temperature > 0)
             "+$temperature°"
@@ -146,7 +165,10 @@ class ViewPagerFragment : Fragment() {
     ) {
         val code = currentWeather.forecast.forecastDay[paramDay].hour[paramHour].condition.code
         val time = currentWeather.forecast.forecastDay[paramDay].hour[paramHour].time
-        WeatherConditions.getSmallIcon(code, time)?.let {
+        val temp = currentWeather.forecast.forecastDay[paramDay].hour[paramHour].tempC
+        val sunrise = currentWeather.forecast.forecastDay[0].astro.sunrise
+        val sunset = currentWeather.forecast.forecastDay[0].astro.sunset
+        WeatherConditions.getSmallIcon(code, time, temp, sunrise, sunset)?.let {
             block?.setImageResource(it)
         }
     }

@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.weatherclothes.artist.domain.CurrentWeatherInteractor
 import com.weatherclothes.artist.domain.models.CurrentWeather
 import com.weatherclothes.artist.presentation.states.MainState
+import com.weatherclothes.artist.utils.RecommendationClothes
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -23,6 +24,7 @@ class MainViewModel @AssistedInject constructor(
 ) : ViewModel() {
 
     var weather: CurrentWeather? = null
+    var manImage: Int? = null
 
     var paramHour1 = 8
     var paramHour2 = 8
@@ -41,14 +43,14 @@ class MainViewModel @AssistedInject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _mainState.value = MainState.Loading
-            Log.d(TAG, "current start")
             weather = interactor.loadWeatherOfCurrentLocation(
                 latitude = latitude,
                 longitude = longitude
             )
             setParamHour(weather?.location?.localHour)
-            Log.d(TAG, "weather = ${weather?.toString()}")
-            Log.d(TAG, "current end")
+            weather?.let {
+                manImage = RecommendationClothes.getClothes(it)
+            }
             _mainState.value = MainState.Success
         }
     }

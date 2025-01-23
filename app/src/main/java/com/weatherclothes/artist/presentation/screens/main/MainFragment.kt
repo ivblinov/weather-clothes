@@ -207,14 +207,12 @@ class MainFragment : Fragment() {
         try {
             fusedClient.lastLocation.addOnSuccessListener { location ->
                 if (location != null) {
-                    Log.d(TAG, "lastLocation = $location")
                     viewModel?.loadWeatherOfCurrentLocation(
                         latitude = location.latitude,
                         longitude = location.longitude
                     )
                 }
             }
-            Log.d(TAG, "requestLocation: start")
             val result = fusedClient.getCurrentLocation(
                 Priority.PRIORITY_BALANCED_POWER_ACCURACY,
                 cancellationSource.token
@@ -225,7 +223,6 @@ class MainFragment : Fragment() {
                     longitude = it.longitude
                 )
             }
-            Log.d(TAG, "requestLocation: end")
         } catch (e: SecurityException) {
             Log.d(TAG, "getLocation: exception = $e")
         }

@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ForecastDayDto(
-    @Json(name = "hour") val hour: List<HourDto>,
-    @Json(name = "astro") val astro: AstroDto,
+data class AstroDto(
+    @Json(name = "sunrise") val sunrise: String,
+    @Json(name = "sunset") val sunset: String,
 )

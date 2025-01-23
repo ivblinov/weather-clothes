@@ -1,6 +1,7 @@
 package com.weatherclothes.artist.presentation.screens.main
 
 import android.Manifest
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -33,6 +34,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 private const val TAG = "MyLog"
+const val KEY_SEX = "KEY_SEX"
+const val KEY_DEGREES = "KEY_DEGREES"
 
 class MainFragment : Fragment() {
 
@@ -56,6 +59,7 @@ class MainFragment : Fragment() {
     private lateinit var adapter: WeatherLocationViewPagerAdapter
 
     private var viewModel: MainViewModel? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
@@ -69,9 +73,14 @@ class MainFragment : Fragment() {
         }
     }
 
+    private var sex = true
+    private var degrees = true
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         inject()
+        sex = getSex()
+        degrees = getDegrees()
     }
 
     override fun onCreateView(
@@ -114,6 +123,42 @@ class MainFragment : Fragment() {
                 adapter.addFragment(ViewPagerFragment(), "Tab $newTabIndex")
                 viewPager.currentItem = adapter.itemCount - 1*/
 
+        binding.settingsButton.setOnClickListener {
+            showSettings()
+            binding.touchTV.visibility = View.VISIBLE
+            setDegreesView(getDegrees())
+            setSexView(getSex())
+        }
+
+        binding.settingsClose.setOnClickListener {
+            hideSettings()
+            binding.touchTV.visibility = View.GONE
+        }
+
+        binding.touchTV.setOnClickListener {
+            binding.touchTV.visibility = View.GONE
+            hideSettings()
+        }
+
+        binding.degreesTitle.setOnClickListener {
+            changeDegrees()
+            viewModel?.changeDegrees()
+        }
+
+        binding.degreesFahrenheitTitle.setOnClickListener {
+            changeDegrees()
+            viewModel?.changeDegrees()
+        }
+
+        binding.maleTitle.setOnClickListener {
+            changeSex()
+            viewModel?.changeSexImage()
+        }
+
+        binding.femaleTitle.setOnClickListener {
+            changeSex()
+            viewModel?.changeSexImage()
+        }
     }
 
     override fun onDestroyView() {
@@ -226,6 +271,78 @@ class MainFragment : Fragment() {
         } catch (e: SecurityException) {
             Log.d(TAG, "getLocation: exception = $e")
         }
+    }
+
+    private fun getSex() = prefsPermission.getBoolean(KEY_SEX, true)
+
+    private fun getDegrees() = prefsPermission.getBoolean(KEY_DEGREES, true)
+
+    private fun showSettings() {
+        val height = binding.settings.height.toFloat()
+        val animator = ObjectAnimator.ofFloat(binding.settings, "translationY", -height, 0f)
+        animator.duration = 500
+        animator.start()
+    }
+
+    private fun hideSettings() {
+        val height = binding.settings.height.toFloat()
+        val animator = ObjectAnimator.ofFloat(binding.settings, "translationY", 0f, -height)
+        animator.duration = 500
+        animator.start()
+    }
+
+    private fun setDegreesView(degrees: Boolean) {
+        if (degrees) {
+            binding.degreesTitle.setTextAppearance(R.style.TextSecAccent_ColorWhite)
+            binding.checkMarkDegrees.visibility = View.VISIBLE
+            binding.degreesFahrenheitTitle.setTextAppearance(R.style.TextSecondaryStyle_ColorWhite)
+            binding.checkMarkDegreesFahrenheit.visibility = View.INVISIBLE
+        } else {
+            binding.degreesTitle.setTextAppearance(R.style.TextSecondaryStyle_ColorWhite)
+            binding.checkMarkDegrees.visibility = View.INVISIBLE
+            binding.degreesFahrenheitTitle.setTextAppearance(R.style.TextSecAccent_ColorWhite)
+            binding.checkMarkDegreesFahrenheit.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setSexView(sex: Boolean) {
+        if (sex) {
+            with(binding) {
+                maleTitle.setTextAppearance(R.style.TextSecAccent_ColorWhite)
+                checkMarkMale.visibility = View.VISIBLE
+                femaleTitle.setTextAppearance(R.style.TextSecondaryStyle_ColorWhite)
+                checkMarkFemale.visibility = View.INVISIBLE
+            }
+        } else {
+            with(binding) {
+                maleTitle.setTextAppearance(R.style.TextSecondaryStyle_ColorWhite)
+                checkMarkMale.visibility = View.INVISIBLE
+                femaleTitle.setTextAppearance(R.style.TextSecAccent_ColorWhite)
+                checkMarkFemale.visibility = View.VISIBLE
+            }
+        }
+    }
+
+    private fun changeDegrees() {
+        if (getDegrees()) {
+            prefsEditor.putBoolean(KEY_DEGREES, false)
+            prefsEditor.apply()
+        } else {
+            prefsEditor.putBoolean(KEY_DEGREES, true)
+            prefsEditor.apply()
+        }
+        setDegreesView(getDegrees())
+    }
+
+    private fun changeSex() {
+        if (getSex()) {
+            prefsEditor.putBoolean(KEY_SEX, false)
+            prefsEditor.apply()
+        } else {
+            prefsEditor.putBoolean(KEY_SEX, true)
+            prefsEditor.apply()
+        }
+        setSexView(getSex())
     }
 
     companion object {

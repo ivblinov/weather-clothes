@@ -24,10 +24,18 @@
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">@font/instrument_sans_regular</item>
     </style>
+
+    <style name="TextSecondaryStyle.ColorWhite" parent="TextSecondaryStyle">
+        <item name="android:textColor">@color/tabTextColorWhite</item>
+    </style>
     
     <style name="TextSecAccent" parent="Text">
         <item name="android:fontFamily">@font/instrument_sans_semibold</item>
         <item name="android:textSize">@dimen/bottom_menu</item>
+    </style>
+
+    <style name="TextSecAccent.ColorWhite" parent="TextSecAccent">
+        <item name="android:textColor">@color/tabTextColorWhite</item>
     </style>
 
     <style name="Text">

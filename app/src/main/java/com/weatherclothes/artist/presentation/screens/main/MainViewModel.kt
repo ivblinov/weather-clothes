@@ -1,5 +1,6 @@
 package com.weatherclothes.artist.presentation.screens.main
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -15,12 +16,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val TAG = "MyLog"
 
 class MainViewModel @AssistedInject constructor(
     private val interactor: CurrentWeatherInteractor,
-    @Assisted savedStateHandle: SavedStateHandle
+    private val prefs: SharedPreferences,
+    @Assisted savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     var weather: CurrentWeather? = null
@@ -43,16 +46,31 @@ class MainViewModel @AssistedInject constructor(
     ) {
         viewModelScope.launch(Dispatchers.IO) {
             _mainState.value = MainState.Loading
+            val sex = prefs.getBoolean(KEY_SEX, true)
             weather = interactor.loadWeatherOfCurrentLocation(
                 latitude = latitude,
                 longitude = longitude
             )
             setParamHour(weather?.location?.localHour)
             weather?.let {
-                manImage = RecommendationClothes.getClothes(it)
+                manImage = RecommendationClothes.getClothes(it, sex)
             }
             _mainState.value = MainState.Success
         }
+    }
+
+    fun changeSexImage() {
+        val sex = prefs.getBoolean(KEY_SEX, true)
+        _mainState.value = MainState.Loading
+        weather?.let {
+            manImage = RecommendationClothes.getClothes(it, sex)
+        }
+        _mainState.value = MainState.Success
+    }
+
+    fun changeDegrees() {
+        _mainState.value = MainState.Loading
+        _mainState.value = MainState.Success
     }
 
     private fun setParamHour(currentHour: Int?) {

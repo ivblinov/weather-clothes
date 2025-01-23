@@ -9,7 +9,7 @@ import kotlin.math.abs
 private const val TAG = "MyLog"
 object RecommendationClothes {
 
-    fun getClothes(weather: CurrentWeather): Int? {
+    fun getClothes(weather: CurrentWeather, sex: Boolean): Int? {
         var codeValue = weather.current.condition.code
         val temperature = weather.current.tempC
         val feelsLikeTemp = weather.current.feelsLikeC
@@ -33,13 +33,13 @@ object RecommendationClothes {
 
         return when {
             checkCodeValue(codeValue) && tempValue >= 0 -> {
-                getManRainCloudy(tempValue)
+                if (sex) getManRainCloudy(tempValue) else getWomanRainCloudy(tempValue)
             }
             checkCodeSunValue(codeValue) && time in sunrise..sunset -> {
-                getManSunCloudy(tempValue)
+                if (sex) getManSunCloudy(tempValue) else getWomanSunCloudy(tempValue)
             }
             else -> {
-                getManCloudy(tempValue)
+                if (sex) getManCloudy(tempValue) else getWomanCloudy(tempValue)
             }
         }
     }
@@ -81,7 +81,6 @@ object RecommendationClothes {
         hourList.forEach { hour ->
             codeList.add(hour.condition.code)
         }
-        Log.d(TAG, "getThreeHourWeatherCodeList: codeList = $codeList")
         return codeList.toList()
     }
 

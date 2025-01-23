@@ -1,6 +1,7 @@
 package com.weatherclothes.artist.presentation.screens.main
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,9 @@ class ViewPagerFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var viewModel: MainViewModel? = null
+
+    @Inject
+    lateinit var prefs: SharedPreferences
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -93,12 +97,42 @@ class ViewPagerFragment : Fragment() {
     private fun setHourWeather() {
         viewModel?.let { vm ->
             vm.weather?.let { weather ->
-                setTemperature(binding.weatherNightBlock1.temperature, weather, vm.paramDay1, vm.paramHour1)
-                setTemperature(binding.weatherNightBlock2.temperature, weather, vm.paramDay2, vm.paramHour2)
-                setTemperature(binding.weatherNightBlock3.temperature, weather, vm.paramDay3, vm.paramHour3)
-                setSmallIconWeather(binding.weatherNightBlock1.iconWeather, weather, vm.paramDay1, vm.paramHour1)
-                setSmallIconWeather(binding.weatherNightBlock2.iconWeather, weather, vm.paramDay2, vm.paramHour2)
-                setSmallIconWeather(binding.weatherNightBlock3.iconWeather, weather, vm.paramDay3, vm.paramHour3)
+                setTemperature(
+                    binding.weatherNightBlock1.temperature,
+                    weather,
+                    vm.paramDay1,
+                    vm.paramHour1
+                )
+                setTemperature(
+                    binding.weatherNightBlock2.temperature,
+                    weather,
+                    vm.paramDay2,
+                    vm.paramHour2
+                )
+                setTemperature(
+                    binding.weatherNightBlock3.temperature,
+                    weather,
+                    vm.paramDay3,
+                    vm.paramHour3
+                )
+                setSmallIconWeather(
+                    binding.weatherNightBlock1.iconWeather,
+                    weather,
+                    vm.paramDay1,
+                    vm.paramHour1
+                )
+                setSmallIconWeather(
+                    binding.weatherNightBlock2.iconWeather,
+                    weather,
+                    vm.paramDay2,
+                    vm.paramHour2
+                )
+                setSmallIconWeather(
+                    binding.weatherNightBlock3.iconWeather,
+                    weather,
+                    vm.paramDay3,
+                    vm.paramHour3
+                )
                 binding.timesOfDay.visibility = View.VISIBLE
             }
             binding.weatherNightBlock1.timesOfDay?.text = setTimesOfDay(vm.paramHour1)
@@ -108,9 +142,15 @@ class ViewPagerFragment : Fragment() {
     }
 
     private fun setCurrentWeather(weather: CurrentWeather) {
+        val degrees = prefs.getBoolean(KEY_DEGREES, true)
         var temperature = "${weather.current.tempC}°"
         if (weather.current.tempC > 0) temperature = "+$temperature"
-        val feelsTemperature = "Feels like ${weather.current.feelsLikeC}°"
+        if (!degrees) {
+            temperature = "${weather.current.tempF}°"
+            if (weather.current.tempF > 0) temperature = "+$temperature"
+        }
+        val feelsTemperature =
+            "Feels like ${if (degrees) weather.current.feelsLikeC else weather.current.feelsLikeF}°"
         val humidity = "${weather.current.humidity}%"
         val pressure = "${weather.current.pressureMmHg} mmHg"
         val wind = "${weather.current.windDir} ${weather.current.windMs} m/s"
@@ -148,8 +188,17 @@ class ViewPagerFragment : Fragment() {
         binding.paramBlock.visibility = View.VISIBLE
     }
 
-    private fun setTemperature(block: AppCompatTextView?, currentWeather: CurrentWeather, paramDay: Int, paramHour: Int) {
-        val temperature = currentWeather.forecast.forecastDay[paramDay].hour[paramHour].tempC
+    private fun setTemperature(
+        block: AppCompatTextView?,
+        currentWeather: CurrentWeather,
+        paramDay: Int,
+        paramHour: Int
+    ) {
+        val temperature = if (getDegrees())
+            currentWeather.forecast.forecastDay[paramDay].hour[paramHour].tempC
+        else
+            currentWeather.forecast.forecastDay[paramDay].hour[paramHour].tempF
+
         val tempForPrint = if (temperature > 0)
             "+$temperature°"
         else
@@ -181,4 +230,6 @@ class ViewPagerFragment : Fragment() {
             else -> getString(R.string.night)
         }
     }
+
+    private fun getDegrees() = prefs.getBoolean(KEY_DEGREES, true)
 }

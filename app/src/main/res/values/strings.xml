@@ -4,8 +4,12 @@
     <string name="weather_menu">Weather</string>
     <string name="places_menu">Places</string>
 
-    <!--    <string name="main_fragment">Main Fragment</string>-->
+    <!--  Main Fragment  -->
     <string name="places_fragment">Places Fragment</string>
+    <string name="degrees_celsius">Degrees Celsius</string>
+    <string name="degrees_fahrenheit">Degrees Fahrenheit</string>
+    <string name="male_character">Male character</string>
+    <string name="female_character">Female character</string>
 
     <!--  ViewPagerFragment  -->
     <string name="humidity">Humidity</string>

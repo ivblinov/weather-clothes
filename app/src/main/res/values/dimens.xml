@@ -40,4 +40,9 @@
     <dimen name="layout_margin_horizontal_text_explanation">24dp</dimen>
     <dimen name="vertical_bias_barrier">0.66</dimen>
 
+    <!--  Places Fragment  -->
+    <dimen name="places_button_height">44dp</dimen>
+    <dimen name="places_button_margin_top">24dp</dimen>
+    <dimen name="space_between_icon_and_text_button">4dp</dimen>
+
 </resources>

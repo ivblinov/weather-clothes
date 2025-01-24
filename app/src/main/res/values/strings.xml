@@ -5,7 +5,6 @@
     <string name="places_menu">Places</string>
 
     <!--  Main Fragment  -->
-    <string name="places_fragment">Places Fragment</string>
     <string name="degrees_celsius">Degrees Celsius</string>
     <string name="degrees_fahrenheit">Degrees Fahrenheit</string>
     <string name="male_character">Male character</string>
@@ -29,5 +28,12 @@
     <string name="text_explanation_for_user">To provide personalized weather updates for your area, we need access to your location. You can grant permission now or manually select a location.</string>
     <string name="grant_permission_button">Grant permission</string>
     <string name="we_need_your_location">We Need Your Location</string>
+
+    <!--  Places Fragment  -->
+    <string name="not_places">You haven\'t added any\nlocations yet</string>
+    <string name="add_a_place">Add a place</string>
+
+    <!--  Search Fragment  -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

@@ -85,4 +85,10 @@
         <item name="android:textColor">@color/tabTextColorWhite</item>
         <item name="android:background">@drawable/bg_round_button</item>
     </style>
+    
+    <style name="TextBold">
+        <item name="fontFamily">@font/instrument_sans_bold</item>
+        <item name="android:textColor">@color/textMain</item>
+        <item name="android:textSize">@dimen/we_need_your_location</item>
+    </style>
 </resources>

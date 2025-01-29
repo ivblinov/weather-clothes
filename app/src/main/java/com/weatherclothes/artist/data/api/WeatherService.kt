@@ -1,6 +1,7 @@
 package com.weatherclothes.artist.data.api
 
 import com.weatherclothes.artist.data.models_dto.CurrentWeatherDto
+import com.weatherclothes.artist.data.models_dto.SearchLocationDto
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -17,4 +18,10 @@ interface WeatherService {
         @Query("days") days: Int = 1,
         @Query("lang") lang: String = "en"
     ): Response<CurrentWeatherDto>
+
+    @Headers("key: $API_KEY")
+    @GET("/v1/search.json")
+    suspend fun getPlace(
+        @Query("q") q: String,
+    ): Response<MutableList<SearchLocationDto>>
 }

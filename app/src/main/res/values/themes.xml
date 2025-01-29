@@ -44,6 +44,21 @@
         <item name="android:textColor">@color/textMain</item>
     </style>
 
+    <style name="TextMain" parent="Text">
+        <item name="android:textColor">@color/tabTextColorWhite</item>
+        <item name="hintTextAppearance">@style/TextMain.Hint</item>
+    </style>
+
+    <style name="TextMain.Hint">
+        <item name="android:textColorHint">@color/tabTextColorWhite</item>
+        <item name="android:fontFamily">@font/instrument_sans_regular</item>
+        <item name="android:textSize">@dimen/hint_text_size</item>
+    </style>
+
+    <style name="TextMain.EditText" parent="TextMain.Hint">
+        <item name="android:fontFamily">@font/instrument_sans_bold</item>
+    </style>
+
     <style name="TextMainAccentStyle" parent="Text">
         <item name="android:fontFamily">@font/instrument_sans_bold</item>
     </style>

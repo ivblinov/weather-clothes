@@ -28,7 +28,7 @@ import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentMainBinding
 import com.weatherclothes.artist.presentation.screens.permissions.PermissionsFragment
 import com.weatherclothes.artist.presentation.states.MainState
-import com.weatherclothes.artist.utils.ViewModelFactory
+import com.weatherclothes.artist.utils.MainViewModelFactory
 import com.weatherclothes.artist.utils.appComponent
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -61,7 +61,7 @@ class MainFragment : Fragment() {
     private var viewModel: MainViewModel? = null
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var mainViewModelFactory: MainViewModelFactory
 
     private val launcher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -88,7 +88,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewModel =
-            ViewModelProvider(requireActivity(), viewModelFactory)[MainViewModel::class.java]
+            ViewModelProvider(requireActivity(), mainViewModelFactory)[MainViewModel::class.java]
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }

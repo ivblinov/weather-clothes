@@ -17,7 +17,7 @@ import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentViewPagerBinding
 import com.weatherclothes.artist.domain.models.CurrentWeather
 import com.weatherclothes.artist.presentation.states.MainState
-import com.weatherclothes.artist.utils.ViewModelFactory
+import com.weatherclothes.artist.utils.MainViewModelFactory
 import com.weatherclothes.artist.utils.WeatherConditions
 import com.weatherclothes.artist.utils.appComponent
 import kotlinx.coroutines.launch
@@ -34,7 +34,7 @@ class ViewPagerFragment : Fragment() {
     lateinit var prefs: SharedPreferences
 
     @Inject
-    lateinit var viewModelFactory: ViewModelFactory
+    lateinit var mainViewModelFactory: MainViewModelFactory
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -46,7 +46,7 @@ class ViewPagerFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         viewModel =
-            ViewModelProvider(requireActivity(), viewModelFactory)[MainViewModel::class.java]
+            ViewModelProvider(requireActivity(), mainViewModelFactory)[MainViewModel::class.java]
         _binding = FragmentViewPagerBinding.inflate(inflater, container, false)
         return binding.root
     }

@@ -8,7 +8,9 @@ import com.weatherclothes.artist.domain.CurrentWeatherInteractor
 import com.weatherclothes.artist.domain.SearchLocationInteractor
 import com.weatherclothes.artist.domain.models.CurrentWeather
 import com.weatherclothes.artist.domain.models.SearchLocation
+import com.weatherclothes.artist.presentation.navigation.Navigator
 import com.weatherclothes.artist.presentation.screens.main.KEY_SEX
+import com.weatherclothes.artist.presentation.states.LocationState
 import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.utils.RecommendationClothes
 import dagger.assisted.AssistedFactory
@@ -17,23 +19,26 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 private const val TAG = "MyLog"
 class SearchViewModel @AssistedInject constructor(
     private val interactor: SearchLocationInteractor,
     private val weatherInteractor: CurrentWeatherInteractor,
     private val prefs: SharedPreferences,
+    private val navigator: Navigator,
 ) : ViewModel() {
 
     var query: String = ""
     var places: MutableList<SearchLocation> = mutableListOf()
     var weather: CurrentWeather? = null
     var manImage: Int? = null
+    var currentLocation: SearchLocation? = null
 
     private val _searchState = MutableStateFlow<MainState>(MainState.Success)
     val searchState = _searchState.asStateFlow()
 
-    private val _placeState = MutableStateFlow<MainState>(MainState.Success)
+    private val _placeState = MutableStateFlow<LocationState>(LocationState.Hiding)
     val placeState = _placeState.asStateFlow()
 
     fun getSearchLocation(nameLocation: String) {
@@ -45,19 +50,16 @@ class SearchViewModel @AssistedInject constructor(
     }
 
     fun clickItem(location: SearchLocation) {
-        Log.d(TAG, "clickItem: location = ${location.name}")
-
+        currentLocation = location
         loadWeatherOfCurrentLocation(location.lat.toDouble(), location.lon.toDouble())
     }
-
-
 
     fun loadWeatherOfCurrentLocation(
         latitude: Double,
         longitude: Double
     ) {
         viewModelScope.launch(Dispatchers.IO) {
-            _placeState.value = MainState.Loading
+            _placeState.value = LocationState.Loading
             val sex = prefs.getBoolean(KEY_SEX, true)
             weather = weatherInteractor.loadWeatherOfCurrentLocation(
                 latitude = latitude,
@@ -66,8 +68,16 @@ class SearchViewModel @AssistedInject constructor(
             weather?.let {
                 manImage = RecommendationClothes.getClothes(it, sex)
             }
-            _placeState.value = MainState.Success
+            _placeState.value = LocationState.Success
         }
+    }
+
+    fun setHidingState() {
+        _placeState.value = LocationState.Hiding
+    }
+
+    fun navigateUp(destination: Int) {
+        navigator.navigateToRoot(destination)
     }
 
     @AssistedFactory

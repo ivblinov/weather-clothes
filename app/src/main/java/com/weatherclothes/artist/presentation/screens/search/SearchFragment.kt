@@ -1,48 +1,85 @@
 package com.weatherclothes.artist.presentation.screens.search
 
+import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.speech.RecognizerIntent
 import android.text.Editable
 import android.text.TextWatcher
 import android.text.style.TextAppearanceSpan
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.weatherclothes.artist.databinding.FragmentSearchBinding
-import com.weatherclothes.artist.presentation.screens.search.recyclerView.SearchAdapter
-import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.R
+import com.weatherclothes.artist.databinding.FragmentSearchBinding
+import com.weatherclothes.artist.domain.models.CurrentWeather
+import com.weatherclothes.artist.domain.models.SearchLocation
+import com.weatherclothes.artist.presentation.screens.main.KEY_DEGREES
+import com.weatherclothes.artist.presentation.screens.search.recyclerView.SearchAdapter
+import com.weatherclothes.artist.presentation.states.LocationState
+import com.weatherclothes.artist.presentation.states.MainState
+import com.weatherclothes.artist.utils.WeatherConditions
 import com.weatherclothes.artist.utils.appComponent
 import com.weatherclothes.artist.utils.lazyViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.Locale
+import javax.inject.Inject
 import kotlin.getValue
 
 private const val TAG = "MyLog"
+
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
+    @Inject
+    lateinit var prefs: SharedPreferences
+
     val viewModel: SearchViewModel by lazyViewModel {
         requireContext().appComponent().searchViewModel().create()
     }
 
-    private var  textMainEditTextSpan: TextAppearanceSpan? = null
+    private var textMainEditTextSpan: TextAppearanceSpan? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         inject()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        val callback = object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (binding.addCityScreen.visibility == View.GONE) {
+                    viewModel.navigateUp(R.id.nav_places)
+                } else if (shouldInterceptBackPress()) {
+                    viewModel.setHidingState()
+                } else {
+                    viewModel.navigateUp(R.id.nav_places)
+                }
+            }
+        }
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+    }
+
+    private fun shouldInterceptBackPress(): Boolean {
+        return binding.addCityScreen.translationY == 0f
     }
 
     override fun onCreateView(
@@ -82,6 +119,12 @@ class SearchFragment : Fragment() {
         binding.microphone.setOnClickListener {
             startVoiceInput()
         }
+
+        binding.locationCloseIV.setOnClickListener {
+            viewModel.setHidingState()
+        }
+
+        binding.addButton.setOnClickListener { }
     }
 
     override fun onDestroyView() {
@@ -105,6 +148,31 @@ class SearchFragment : Fragment() {
                                     viewModel.query,
                                     viewModel.places,
                                 )
+                            }
+                        }
+                    }
+                }
+                launch {
+                    viewModel.placeState.collect { state ->
+                        when (state) {
+                            LocationState.Hiding -> {
+                                dropAddCityScreen()
+                                hideAddCityScreen()
+                            }
+
+                            LocationState.Loading -> {
+                                hideSoftInput()
+                                showAddCityScreen()
+                            }
+
+                            LocationState.Success -> {
+                                viewModel.weather?.let {
+                                    inputDataInLocationScreen(
+                                        viewModel.currentLocation,
+                                        it
+                                    )
+                                    showAddLocationScreenItems()
+                                }
                             }
                         }
                     }
@@ -154,6 +222,109 @@ class SearchFragment : Fragment() {
     }
 
     private fun getSearchAdapter(): SearchAdapter = binding.searchRV.adapter as SearchAdapter
+
+    private fun showAddCityScreen() {
+        binding.searchBlock.visibility = View.GONE
+        binding.searchRV.visibility = View.GONE
+        binding.addCityScreen.visibility = View.VISIBLE
+        binding.addCityScreen.translationY = 0f
+        showProgressBar()
+    }
+
+    private fun showProgressBar() {
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideAddCityScreen() {
+        binding.searchBlock.visibility = View.VISIBLE
+        binding.searchRV.visibility = View.VISIBLE
+        showSoftInput(binding.search)
+    }
+
+    private fun dropAddCityScreen() {
+        val height = binding.addCityScreen.height.toFloat()
+        val animator = ObjectAnimator.ofFloat(binding.addCityScreen, "translationY", 0f, height)
+        animator.duration = 500
+        animator.start()
+
+        lifecycleScope.launch {
+            delay(400)
+            hideAddLocationScreenItems()
+        }
+    }
+
+    private fun hideSoftInput() {
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.hideSoftInputFromWindow(view?.windowToken, 0)
+    }
+
+    private fun showSoftInput(editText: EditText) {
+        editText.requestFocus()
+        val imm =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+        imm?.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun inputDataInLocationScreen(
+        currentLocation: SearchLocation?,
+        weather: CurrentWeather
+    ) {
+
+        val degrees = prefs.getBoolean(KEY_DEGREES, true)
+        var temperature = "${weather.current.tempC}°"
+        if (weather.current.tempC > 0) temperature = "+$temperature"
+        if (!degrees) {
+            temperature = "${weather.current.tempF}°"
+            if (weather.current.tempF > 0) temperature = "+$temperature"
+        }
+        val feelsTemperature =
+            "Feels like ${if (degrees) weather.current.feelsLikeC else weather.current.feelsLikeF}°"
+        val sunrise = weather.forecast.forecastDay[0].astro.sunrise
+        val sunset = weather.forecast.forecastDay[0].astro.sunset
+
+        binding.nameCityTV.text = currentLocation?.name
+        binding.weatherStatus.text =
+            WeatherConditions.getDescription(
+                weather.current.condition.code,
+                weather.location.localHour,
+                sunrise,
+                sunset
+            )
+        WeatherConditions.getBigIcon(
+            weather.current.condition.code,
+            weather.location.localHour,
+            weather.current.tempC,
+            sunrise,
+            sunset,
+        )?.let {
+            binding.bigWeatherIcon.setImageResource(it)
+        }
+        viewModel.manImage?.let {
+            binding.man.setImageResource(it)
+        }
+        binding.temperature.text = temperature
+        binding.feelsTemperature.text = feelsTemperature
+    }
+
+    private fun showAddLocationScreenItems() {
+        binding.progressBar.visibility = View.INVISIBLE
+        binding.locationCloseIV.visibility = View.VISIBLE
+        binding.nameCityTV.visibility = View.VISIBLE
+        binding.addButton.visibility = View.VISIBLE
+        binding.temperatureBlock.visibility = View.VISIBLE
+        binding.bigWeatherIcon.visibility = View.VISIBLE
+        binding.man.visibility = View.VISIBLE
+    }
+
+    private fun hideAddLocationScreenItems() {
+        binding.locationCloseIV.visibility = View.INVISIBLE
+        binding.nameCityTV.visibility = View.INVISIBLE
+        binding.addButton.visibility = View.INVISIBLE
+        binding.temperatureBlock.visibility = View.INVISIBLE
+        binding.bigWeatherIcon.visibility = View.INVISIBLE
+        binding.man.visibility = View.INVISIBLE
+    }
 
     companion object {
         private const val REQUEST_CODE_SPEECH_INPUT = 100

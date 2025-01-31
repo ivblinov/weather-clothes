@@ -36,4 +36,7 @@
     <!--  Search Fragment  -->
     <string name="searchHint">Search the place</string>
 
+    <!--  Add City Location Screen  -->
+    <string name="add_location">Add</string>
+
 </resources>

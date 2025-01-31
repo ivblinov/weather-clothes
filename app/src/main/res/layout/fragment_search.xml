@@ -34,9 +34,11 @@
             android:layout_width="@dimen/size_0dp"
             android:layout_height="wrap_content"
             android:background="@null"
-            android:inputType="textCapSentences|textVisiblePassword"
+            android:inputType="textCapSentences|textNoSuggestions"
             android:padding="@dimen/edit_text_padding"
             android:textCursorDrawable="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/microphone"
             app:layout_constraintHorizontal_bias="0"
@@ -67,5 +69,138 @@
         app:layout_constraintStart_toStartOf="@+id/searchBlock"
         app:layout_constraintTop_toBottomOf="@+id/searchBlock"
         tools:listitem="@layout/item_search" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/addCityScreen"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/size_0dp"
+        android:layout_marginTop="17dp"
+        android:background="@drawable/bg_add_city_location"
+        android:paddingHorizontal="@dimen/location_padding_horizontal_16dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/nameCityTV"
+            style="@style/Text.H1"
+            android:layout_width="@dimen/size_0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/layout_margin_start_city_name_4dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/addButton"
+            app:layout_constraintEnd_toStartOf="@+id/locationCloseIV"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/locationCloseIV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_location_close"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/nameCityTV"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/nameCityTV" />
+
+        <LinearLayout
+            android:id="@+id/addButton"
+            style="@style/TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/places_button_height"
+            android:gravity="center"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/temperatureBlock"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/nameCityTV">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_plus" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                style="@style/TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/space_between_icon_and_text_button"
+                android:text="@string/add_location" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/bigWeatherIcon"
+            android:layout_width="@dimen/layout_width_big_weather_icon"
+            android:layout_height="@dimen/layout_width_big_weather_icon"
+            android:layout_marginStart="@dimen/layout_marginStart_big_weather_icon"
+            android:src="@drawable/ic_big_partly_cloudy"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/temperatureBlock"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/temperatureBlock" />
+
+        <LinearLayout
+            android:id="@+id/temperatureBlock"
+            android:layout_width="@dimen/layout_width_temperature_block"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/man"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addButton">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/weatherStatus"
+                style="@style/TextSecondaryStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                tools:text="variable cloudiness" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/temperature"
+                style="@style/Text.Temperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="+10°" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/feelsTemperature"
+                style="@style/TextSecondaryStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:text="Feels like 12°" />
+
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/man"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/man_10_15"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/temperatureBlock" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        android:indeterminateTint="@color/settingsBar"
+        android:indeterminateTintMode="src_in"
+        android:indeterminate="true"
+        app:layout_constraintBottom_toBottomOf="@+id/addCityScreen"
+        app:layout_constraintEnd_toEndOf="@+id/addCityScreen"
+        app:layout_constraintStart_toStartOf="@+id/addCityScreen"
+        app:layout_constraintTop_toTopOf="@+id/addCityScreen" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

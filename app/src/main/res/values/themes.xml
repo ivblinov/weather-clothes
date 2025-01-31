@@ -106,4 +106,10 @@
         <item name="android:textColor">@color/textMain</item>
         <item name="android:textSize">@dimen/we_need_your_location</item>
     </style>
+
+    <style name="Text.H1">
+        <item name="android:fontFamily">@font/instrument_sans_semibold</item>
+        <item name="android:textSize">@dimen/text_h1_size</item>
+        <item name="android:textColor">@color/textMain</item>
+    </style>
 </resources>

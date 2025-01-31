@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <gradient
+        android:angle="90"
+        android:endColor="@color/endColorGradientBgWeatherNightBlock"
+        android:startColor="@color/startColorGradientBgWeatherNightBlock"
+        android:type="linear" />
+
+    <corners
+        android:topLeftRadius="@dimen/city_location_corners_radius_16dp"
+        android:topRightRadius="@dimen/city_location_corners_radius_16dp" />
+</shape>

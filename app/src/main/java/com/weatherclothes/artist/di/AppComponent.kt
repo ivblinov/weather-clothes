@@ -2,6 +2,7 @@ package com.weatherclothes.artist.di
 
 import android.app.Application
 import com.weatherclothes.artist.di.modules.AppModule
+import com.weatherclothes.artist.di.modules.DataModule
 import com.weatherclothes.artist.di.modules.LocationModule
 import com.weatherclothes.artist.di.modules.NavigationModule
 import com.weatherclothes.artist.di.modules.NetworkModule
@@ -27,6 +28,7 @@ import javax.inject.Singleton
         LocationModule::class,
         NetworkModule::class,
         NavigationModule::class,
+        DataModule::class,
     ]
 )
 interface AppComponent {

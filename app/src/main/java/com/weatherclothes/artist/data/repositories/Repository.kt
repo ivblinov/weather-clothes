@@ -1,4 +1,4 @@
-package com.weatherclothes.artist.data
+package com.weatherclothes.artist.data.repositories
 
 import com.weatherclothes.artist.data.api.WeatherService
 import com.weatherclothes.artist.data.mappers.CurrentWeatherMapper

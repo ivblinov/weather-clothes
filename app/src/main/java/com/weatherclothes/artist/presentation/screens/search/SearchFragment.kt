@@ -124,7 +124,10 @@ class SearchFragment : Fragment() {
             viewModel.setHidingState()
         }
 
-        binding.addButton.setOnClickListener { }
+        binding.addButton.setOnClickListener {
+            viewModel.addLocation()
+            hideAddButton()
+        }
     }
 
     override fun onDestroyView() {
@@ -158,6 +161,7 @@ class SearchFragment : Fragment() {
                             LocationState.Hiding -> {
                                 dropAddCityScreen()
                                 hideAddCityScreen()
+                                showAddButton()
                             }
 
                             LocationState.Loading -> {
@@ -212,6 +216,18 @@ class SearchFragment : Fragment() {
                 binding.search.setText(result[0])
             }
         }
+    }
+
+    private fun hideAddButton() {
+        binding.addedButton.visibility = View.VISIBLE
+        binding.addButton.visibility = View.INVISIBLE
+        binding.addButton.isClickable = false
+    }
+
+    private fun showAddButton() {
+        binding.addedButton.visibility = View.INVISIBLE
+        binding.addButton.visibility = View.VISIBLE
+        binding.addButton.isClickable = true
     }
 
     private fun hideHint(length: Int) {

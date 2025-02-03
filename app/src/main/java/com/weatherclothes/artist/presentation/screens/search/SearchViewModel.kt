@@ -1,12 +1,14 @@
 package com.weatherclothes.artist.presentation.screens.search
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weatherclothes.artist.domain.AddLocationInteractor
 import com.weatherclothes.artist.domain.CurrentWeatherInteractor
+import com.weatherclothes.artist.domain.GetLocationsInteractor
 import com.weatherclothes.artist.domain.SearchLocationInteractor
 import com.weatherclothes.artist.domain.models.CurrentWeather
+import com.weatherclothes.artist.domain.models.LocationEntity
 import com.weatherclothes.artist.domain.models.SearchLocation
 import com.weatherclothes.artist.presentation.navigation.Navigator
 import com.weatherclothes.artist.presentation.screens.main.KEY_SEX
@@ -19,11 +21,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 private const val TAG = "MyLog"
 class SearchViewModel @AssistedInject constructor(
     private val interactor: SearchLocationInteractor,
+    private val addLocationInteractor: AddLocationInteractor,
     private val weatherInteractor: CurrentWeatherInteractor,
     private val prefs: SharedPreferences,
     private val navigator: Navigator,
@@ -69,6 +71,14 @@ class SearchViewModel @AssistedInject constructor(
                 manImage = RecommendationClothes.getClothes(it, sex)
             }
             _placeState.value = LocationState.Success
+        }
+    }
+
+    fun addLocation() {
+        viewModelScope.launch(Dispatchers.IO) {
+            currentLocation?.let {
+                addLocationInteractor.addLocation(it)
+            }
         }
     }
 

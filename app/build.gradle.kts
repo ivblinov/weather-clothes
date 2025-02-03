@@ -74,4 +74,8 @@ dependencies {
 
     // viewPager2:
     implementation (libs.androidx.viewpager2)
+
+    // room:
+    implementation(libs.room)
+    ksp(libs.room.compiler)
 }

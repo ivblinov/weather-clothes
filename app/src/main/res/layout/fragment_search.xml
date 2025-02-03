@@ -34,11 +34,11 @@
             android:layout_width="@dimen/size_0dp"
             android:layout_height="wrap_content"
             android:background="@null"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:inputType="textCapSentences|textNoSuggestions"
             android:padding="@dimen/edit_text_padding"
             android:textCursorDrawable="@null"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/microphone"
             app:layout_constraintHorizontal_bias="0"
@@ -131,6 +131,19 @@
 
         </LinearLayout>
 
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/addedButton"
+            style="@style/TextButton"
+            android:layout_width="@dimen/size_0dp"
+            android:layout_height="@dimen/size_0dp"
+            android:gravity="center"
+            android:text="@string/added"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="@+id/addButton"
+            app:layout_constraintEnd_toEndOf="@+id/addButton"
+            app:layout_constraintStart_toStartOf="@+id/addButton"
+            app:layout_constraintTop_toTopOf="@+id/addButton" />
+
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/bigWeatherIcon"
             android:layout_width="@dimen/layout_width_big_weather_icon"
@@ -194,10 +207,10 @@
         android:id="@+id/progressBar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="invisible"
+        android:indeterminate="true"
         android:indeterminateTint="@color/settingsBar"
         android:indeterminateTintMode="src_in"
-        android:indeterminate="true"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/addCityScreen"
         app:layout_constraintEnd_toEndOf="@+id/addCityScreen"
         app:layout_constraintStart_toStartOf="@+id/addCityScreen"

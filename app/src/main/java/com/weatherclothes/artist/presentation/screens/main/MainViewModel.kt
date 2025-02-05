@@ -1,12 +1,14 @@
 package com.weatherclothes.artist.presentation.screens.main
 
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.weatherclothes.artist.domain.CurrentWeatherInteractor
+import com.weatherclothes.artist.domain.GetLocationsInteractor
 import com.weatherclothes.artist.domain.models.CurrentWeather
+import com.weatherclothes.artist.domain.models.LocationEntity
+import com.weatherclothes.artist.presentation.navigation.MainRouter
 import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.utils.RecommendationClothes
 import dagger.assisted.Assisted
@@ -16,18 +18,18 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import javax.inject.Inject
-
-private const val TAG = "MyLog"
 
 class MainViewModel @AssistedInject constructor(
     private val interactor: CurrentWeatherInteractor,
+    private val locationsInteractor: GetLocationsInteractor,
     private val prefs: SharedPreferences,
+    private val router: MainRouter,
     @Assisted savedStateHandle: SavedStateHandle,
 ) : ViewModel() {
 
     var weather: CurrentWeather? = null
     var manImage: Int? = null
+    var locations: List<LocationEntity> = listOf()
 
     var paramHour1 = 8
     var paramHour2 = 8
@@ -51,11 +53,21 @@ class MainViewModel @AssistedInject constructor(
                 latitude = latitude,
                 longitude = longitude
             )
+            if (weather == null) {
+                changeError()
+                return@launch
+            }
             setParamHour(weather?.location?.localHour)
             weather?.let {
                 manImage = RecommendationClothes.getClothes(it, sex)
             }
             _mainState.value = MainState.Success
+        }
+    }
+
+    fun getAllLocations() {
+        viewModelScope.launch(Dispatchers.IO) {
+            locations = locationsInteractor.getLocations()
         }
     }
 
@@ -68,9 +80,19 @@ class MainViewModel @AssistedInject constructor(
         _mainState.value = MainState.Success
     }
 
-    fun changeDegrees() {
+    fun changeMainState() {
         _mainState.value = MainState.Loading
         _mainState.value = MainState.Success
+    }
+
+    fun changeError() {
+        viewModelScope.launch(Dispatchers.IO) {
+            _mainState.value = MainState.Error
+        }
+    }
+
+    fun update() {
+        _mainState.value = MainState.Update
     }
 
     private fun setParamHour(currentHour: Int?) {
@@ -80,12 +102,14 @@ class MainViewModel @AssistedInject constructor(
                 paramHour2 = 18
                 paramHour3 = 23
             }
+
             in 13..17 -> {
                 paramHour1 = 18
                 paramHour2 = 23
                 paramHour3 = 8
                 paramDay3 = 1
             }
+
             in 18..22 -> {
                 paramHour1 = 23
                 paramHour2 = 8
@@ -93,6 +117,7 @@ class MainViewModel @AssistedInject constructor(
                 paramDay2 = 1
                 paramDay3 = 1
             }
+
             23 -> {
                 paramHour1 = 8
                 paramHour2 = 13
@@ -101,6 +126,7 @@ class MainViewModel @AssistedInject constructor(
                 paramDay2 = 1
                 paramDay3 = 1
             }
+
             else -> {
                 paramHour1 = 8
                 paramHour2 = 13

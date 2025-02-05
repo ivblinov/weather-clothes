@@ -9,6 +9,7 @@ import com.weatherclothes.artist.domain.models.CurrentWeather
 import com.weatherclothes.artist.domain.models.LocationEntity
 import com.weatherclothes.artist.presentation.navigation.MainRouter
 import com.weatherclothes.artist.presentation.states.MainState
+import com.weatherclothes.artist.utils.isInternetAvailable
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.Dispatchers
@@ -36,6 +37,14 @@ class PlacesViewModel @AssistedInject constructor(
         viewModelScope.launch(Dispatchers.Main) {
             router.openSearchFragment()
         }
+    }
+
+    fun setErrorState() {
+        _placeState.value = MainState.Error
+    }
+
+    fun setUpdateState() {
+        _placeState.value = MainState.Update
     }
 
     fun getLocations() {

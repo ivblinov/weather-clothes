@@ -13,7 +13,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.weatherclothes.artist.databinding.FragmentPlacesBinding
 import com.weatherclothes.artist.presentation.states.MainState
+import com.weatherclothes.artist.R
 import com.weatherclothes.artist.utils.appComponent
+import com.weatherclothes.artist.utils.isInternetAvailable
 import com.weatherclothes.artist.utils.lazyViewModel
 import kotlinx.coroutines.launch
 
@@ -30,7 +32,7 @@ class PlacesFragment : Fragment() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         inject()
-        viewModel.getLocations()
+        loadWeather()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +61,10 @@ class PlacesFragment : Fragment() {
         binding.addPlace.setOnClickListener {
             viewModel.openSearch()
         }
+
+        binding.tryAgain.setOnClickListener {
+            viewModel.setUpdateState()
+        }
     }
 
     override fun onDestroyView() {
@@ -80,15 +86,41 @@ class PlacesFragment : Fragment() {
 
                             }
                             MainState.Success -> {
+                                hideError()
                                 Log.d(
                                     TAG,
                                     "subscribe: weatherLocations = ${viewModel.weatherLocations}"
                                 )
+                            }
+                            MainState.Error -> {
+                                showError()
+                            }
+                            MainState.Update -> {
+                                loadWeather()
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun showError() {
+        binding.addPlace.visibility = View.GONE
+        binding.notLocationTV.visibility = View.GONE
+        binding.error.visibility = View.VISIBLE
+    }
+
+    private fun hideError() {
+        binding.addPlace.visibility = View.VISIBLE
+        binding.notLocationTV.visibility = View.VISIBLE
+        binding.error.visibility = View.GONE
+    }
+
+    private fun loadWeather() {
+        if (isInternetAvailable(requireContext()))
+            viewModel.getLocations()
+        else
+            viewModel.setErrorState()
     }
 }

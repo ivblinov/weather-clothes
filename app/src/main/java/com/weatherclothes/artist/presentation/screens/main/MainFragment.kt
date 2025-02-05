@@ -2,6 +2,7 @@ package com.weatherclothes.artist.presentation.screens.main
 
 import android.Manifest
 import android.animation.ObjectAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
@@ -30,6 +31,7 @@ import com.weatherclothes.artist.presentation.screens.permissions.PermissionsFra
 import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.utils.MainViewModelFactory
 import com.weatherclothes.artist.utils.appComponent
+import com.weatherclothes.artist.utils.isInternetAvailable
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -89,39 +91,41 @@ class MainFragment : Fragment() {
     ): View? {
         viewModel =
             ViewModelProvider(requireActivity(), mainViewModelFactory)[MainViewModel::class.java]
+
+        viewModel?.getAllLocations()
+
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
 
+    @SuppressLint("InflateParams")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewPager = binding.viewPager
-        tabLayout = binding.tabLayout
-        adapter = WeatherLocationViewPagerAdapter(this.requireActivity())
-
         subscribe()
 
-        val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
-        checkFirstLogin(permissionRequested)
+        viewPager = binding.viewPager
+        tabLayout = binding.tabLayout
 
+        val fragments = mutableListOf<Fragment>(ViewPagerFragment())
+        val titles = mutableListOf<String>(getString(R.string.your_location))
+        viewModel?.locations?.forEach {
+            val fragment = ViewPagerFragment.newInstance(it)
+            fragments.add(fragment)
+            titles.add(it.name)
+        }
+        adapter = WeatherLocationViewPagerAdapter(this.requireActivity(), fragments, titles)
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            if (position == 0)
+//                tab.setIcon(R.drawable.ic_tab_layout)
+                tab.customView = LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab_first, null)
             tab.text = adapter.getTitle(position)
-//            if (position == 0) {
-//                Log.d(TAG, "onViewCreated: ")
-//                tab.setIcon(R.drawable.ic_location)
-//            } else {
-//                Log.d(TAG, "onViewCreated: No")
-//            }
-//            tabLayout.selectTab(tab, true)
         }.attach()
 
-        // добавление новых табов
-        /*        val newTabIndex = adapter.itemCount + 1
-                adapter.addFragment(ViewPagerFragment(), "Tab $newTabIndex")
-                viewPager.currentItem = adapter.itemCount - 1*/
+        val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
+        checkFirstLogin(permissionRequested)
 
         binding.settingsButton.setOnClickListener {
             showSettings()
@@ -142,12 +146,12 @@ class MainFragment : Fragment() {
 
         binding.degreesTitle.setOnClickListener {
             changeDegrees()
-            viewModel?.changeDegrees()
+            viewModel?.changeMainState()
         }
 
         binding.degreesFahrenheitTitle.setOnClickListener {
             changeDegrees()
-            viewModel?.changeDegrees()
+            viewModel?.changeMainState()
         }
 
         binding.maleTitle.setOnClickListener {
@@ -158,6 +162,10 @@ class MainFragment : Fragment() {
         binding.femaleTitle.setOnClickListener {
             changeSex()
             viewModel?.changeSexImage()
+        }
+
+        binding.tryAgain.setOnClickListener {
+            viewModel?.update()
         }
     }
 
@@ -176,8 +184,24 @@ class MainFragment : Fragment() {
                 launch {
                     viewModel?.mainState?.collect { state ->
                         when (state) {
-                            MainState.Loading -> {}
-                            MainState.Success -> {}
+                            MainState.Loading -> {
+                                showProgressBar()
+                            }
+                            MainState.Success -> {
+                                hideProgressBar()
+                            }
+                            MainState.Error -> {
+                                hideProgressBar()
+                                binding.viewPager.visibility = View.GONE
+                                binding.error.visibility = View.VISIBLE
+                            }
+                            MainState.Update -> {
+                                hideProgressBar()
+                                binding.error.visibility = View.GONE
+                                binding.viewPager.visibility = View.VISIBLE
+                                val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
+                                checkFirstLogin(permissionRequested)
+                            }
                         }
                     }
                 }
@@ -237,8 +261,11 @@ class MainFragment : Fragment() {
     }
 
     private fun onPermissionsGranted() {
-        getLocation()
-        adapter.addFragment(ViewPagerFragment(), getString(R.string.your_location))
+        if (isInternetAvailable(requireContext())) {
+            getLocation()
+        } else {
+            viewModel?.changeError()
+        }
     }
 
     private fun onPermissionsDenied() {
@@ -343,6 +370,14 @@ class MainFragment : Fragment() {
             prefsEditor.apply()
         }
         setSexView(getSex())
+    }
+
+    private fun showProgressBar() {
+        binding.progressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        binding.progressBar.visibility = View.INVISIBLE
     }
 
     companion object {

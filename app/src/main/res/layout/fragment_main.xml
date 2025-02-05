@@ -17,6 +17,82 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/barrierTop" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/error"
+        android:layout_width="@dimen/size_0dp"
+        android:layout_height="@dimen/size_0dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/barrierTop">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/image_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="fitXY"
+            android:src="@drawable/image_error_fragment"
+            app:layout_constraintBottom_toTopOf="@+id/barrier"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title_error" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/title_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/instrument_sans_bold"
+            android:text="@string/connection_error"
+            android:textColor="@color/textMain"
+            android:textSize="@dimen/we_need_your_location"
+            app:layout_constraintBottom_toTopOf="@+id/image_error"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.15" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="textExplanationForUser"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="@dimen/vertical_bias_barrier" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textExplanationForUser"
+            style="@style/TextSecondaryStyle"
+            android:layout_width="@dimen/size_0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="@dimen/layout_margin_horizontal_text_explanation"
+            android:text="@string/text_error_for_user"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/barrier"
+            app:layout_constraintVertical_bias="0.2" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/tryAgain"
+            style="@style/TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/grant_permission_button"
+            android:layout_marginHorizontal="@dimen/layout_margin_horizontal_button"
+            android:text="@string/try_again"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textExplanationForUser"
+            app:layout_constraintVertical_bias="0.35" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <FrameLayout
         android:id="@+id/locationBar"
         android:layout_width="match_parent"
@@ -32,6 +108,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/margin_start"
+        android:paddingEnd="8dp"
         android:src="@drawable/ic_settings"
         app:layout_constraintBottom_toBottomOf="@+id/locationBar"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,32 +118,36 @@
         android:id="@+id/scrollView"
         android:layout_width="@dimen/size_0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="@+id/settingsButton"
+        android:fadeScrollbars="false"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toBottomOf="@+id/locationBar"
         app:layout_constraintEnd_toEndOf="@+id/locationBar"
         app:layout_constraintStart_toEndOf="@+id/settingsButton"
-        app:layout_constraintTop_toTopOf="@+id/settingsButton">
+        app:layout_constraintTop_toTopOf="@+id/locationBar">
 
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:layout_constraintBottom_toBottomOf="@+id/scrollView"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@+id/locationBar"
             app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@+id/scrollView"
-            app:layout_constraintTop_toTopOf="@+id/scrollView">
+            app:layout_constraintStart_toEndOf="@+id/scrollView">
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tabLayout"
                 style="@style/TabLayoutStyle"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:background="@android:color/transparent"
                 app:tabIndicatorColor="@color/tabSelectedTextColor"
+                app:tabIndicatorHeight="1dp"
                 app:tabMode="scrollable"
+                app:tabPaddingBottom="@dimen/size_0dp"
                 app:tabSelectedTextColor="@color/tabSelectedTextColor"
                 app:tabTextColor="@color/tabTextColorWhite" />
         </com.google.android.material.appbar.AppBarLayout>
@@ -204,5 +285,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/settingsBar"
+        android:indeterminateTintMode="src_in"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

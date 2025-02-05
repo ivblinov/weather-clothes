@@ -152,6 +152,8 @@ class SearchFragment : Fragment() {
                                     viewModel.places,
                                 )
                             }
+                            MainState.Error -> {}
+                            MainState.Update -> {}
                         }
                     }
                 }

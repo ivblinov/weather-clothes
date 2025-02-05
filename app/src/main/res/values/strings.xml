@@ -40,4 +40,9 @@
     <string name="add_location">Add</string>
     <string name="added">Added</string>
 
+    <!-- Error Screen -->
+    <string name="connection_error">Connection Error</string>
+    <string name="text_error_for_user">Something went wrong. We couldn\'t load the latest weather updates. Please check your internet connection and try again.</string>
+    <string name="try_again">Try again</string>
+
 </resources>

@@ -83,6 +83,8 @@
     </style>
 
     <style name="TabTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="fontFamily">@font/instrument_sans_regular</item>
+        <item name="android:textSize">@dimen/text_size_tab_layout</item>
         <item name="android:textStyle">normal</item>
         <item name="textAllCaps">false</item>
         <item name="singleLine">true</item>

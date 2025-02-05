@@ -12,6 +12,7 @@ import com.weatherclothes.artist.presentation.SplashActivity
 import com.weatherclothes.artist.presentation.screens.main.MainFragment
 import com.weatherclothes.artist.presentation.screens.main.MainViewModel
 import com.weatherclothes.artist.presentation.screens.main.ViewPagerFragment
+import com.weatherclothes.artist.presentation.screens.main.ViewPagerViewModel
 import com.weatherclothes.artist.presentation.screens.places.PlacesFragment
 import com.weatherclothes.artist.presentation.screens.places.PlacesViewModel
 import com.weatherclothes.artist.presentation.screens.search.SearchFragment
@@ -59,4 +60,6 @@ interface AppComponent {
     fun placesViewModel(): PlacesViewModel.Factory
 
     fun searchViewModel(): SearchViewModel.Factory
+
+    fun viewPagerViewModel(): ViewPagerViewModel.Factory
 }

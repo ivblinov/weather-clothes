@@ -31,6 +31,11 @@
     <dimen name="margin_start_degrees">4dp</dimen>
     <dimen name="big_weather_icon_width">100dp</dimen>
 
+    <!--  Custom Tab  -->
+    <dimen name="text_size_tab_layout">12sp</dimen>
+    <dimen name="tab_indicator_height">1dp</dimen>
+    <dimen name="layout_margin_end_custom_tab">4dp</dimen>
+
     <!--  Settings  -->
     <dimen name="settings_margin_bottom">8dp</dimen>
 

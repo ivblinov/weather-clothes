@@ -16,19 +16,29 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentViewPagerBinding
 import com.weatherclothes.artist.domain.models.CurrentWeather
+import com.weatherclothes.artist.domain.models.LocationEntity
 import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.utils.MainViewModelFactory
 import com.weatherclothes.artist.utils.WeatherConditions
 import com.weatherclothes.artist.utils.appComponent
+import com.weatherclothes.artist.utils.isInternetAvailable
+import com.weatherclothes.artist.utils.lazyViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.getValue
 
 class ViewPagerFragment : Fragment() {
 
     private var _binding: FragmentViewPagerBinding? = null
     private val binding get() = _binding!!
 
-    private var viewModel: MainViewModel? = null
+    private var mainViewModel: MainViewModel? = null
+
+    private var city: LocationEntity? = null
+
+    val viewModel: ViewPagerViewModel by lazyViewModel {
+        requireContext().appComponent().viewPagerViewModel().create()
+    }
 
     @Inject
     lateinit var prefs: SharedPreferences
@@ -41,12 +51,24 @@ class ViewPagerFragment : Fragment() {
         inject()
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        city = arguments?.getParcelable(LOCATION_KEY)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel =
+        mainViewModel =
             ViewModelProvider(requireActivity(), mainViewModelFactory)[MainViewModel::class.java]
+
+        city?.let {
+            if (isInternetAvailable(requireContext()))
+                viewModel.loadWeatherOfCurrentLocation(it.lat.toDouble(), it.lon.toDouble())
+            else mainViewModel?.changeError()
+        }
         _binding = FragmentViewPagerBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -70,16 +92,37 @@ class ViewPagerFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.RESUMED) {
                 launch {
-                    viewModel?.let { vm ->
+                    mainViewModel?.let { vm ->
                         vm.mainState.collect { state ->
                             when (state) {
                                 MainState.Loading -> {}
                                 MainState.Success -> {
-                                    vm.weather?.let { setCurrentWeather(it) }
-                                    setHourWeather()
-                                    setManImage()
+                                    if (city == null) {
+                                        vm.weather?.let { setCurrentWeather(it) }
+                                        setHourWeather()
+                                        setManImage()
+                                    }
+                                }
+                                MainState.Error -> {}
+                                MainState.Update -> {}
+                            }
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.viewPagerState.collect { state ->
+                        when (state) {
+                            MainState.Error -> {}
+                            MainState.Loading -> {}
+                            MainState.Success -> {
+                                if (city != null) {
+                                    viewModel.weather?.let { setCurrentWeather(it) }
+                                    setHourWeatherViewPagerState()
+                                    setManImageViewPagerState()
                                 }
                             }
+                            MainState.Update -> {}
                         }
                     }
                 }
@@ -88,14 +131,68 @@ class ViewPagerFragment : Fragment() {
     }
 
     private fun setManImage() {
-        viewModel?.manImage?.let {
+        mainViewModel?.manImage?.let {
+            binding.man.setImageResource(it)
+            binding.man.visibility = View.VISIBLE
+        }
+    }
+
+    private fun setManImageViewPagerState() {
+        viewModel.manImage?.let {
             binding.man.setImageResource(it)
             binding.man.visibility = View.VISIBLE
         }
     }
 
     private fun setHourWeather() {
-        viewModel?.let { vm ->
+        mainViewModel?.let { vm ->
+            vm.weather?.let { weather ->
+                setTemperature(
+                    binding.weatherNightBlock1.temperature,
+                    weather,
+                    vm.paramDay1,
+                    vm.paramHour1
+                )
+                setTemperature(
+                    binding.weatherNightBlock2.temperature,
+                    weather,
+                    vm.paramDay2,
+                    vm.paramHour2
+                )
+                setTemperature(
+                    binding.weatherNightBlock3.temperature,
+                    weather,
+                    vm.paramDay3,
+                    vm.paramHour3
+                )
+                setSmallIconWeather(
+                    binding.weatherNightBlock1.iconWeather,
+                    weather,
+                    vm.paramDay1,
+                    vm.paramHour1
+                )
+                setSmallIconWeather(
+                    binding.weatherNightBlock2.iconWeather,
+                    weather,
+                    vm.paramDay2,
+                    vm.paramHour2
+                )
+                setSmallIconWeather(
+                    binding.weatherNightBlock3.iconWeather,
+                    weather,
+                    vm.paramDay3,
+                    vm.paramHour3
+                )
+                binding.timesOfDay.visibility = View.VISIBLE
+            }
+            binding.weatherNightBlock1.timesOfDay?.text = setTimesOfDay(vm.paramHour1)
+            binding.weatherNightBlock2.timesOfDay?.text = setTimesOfDay(vm.paramHour2)
+            binding.weatherNightBlock3.timesOfDay?.text = setTimesOfDay(vm.paramHour3)
+        }
+    }
+
+    private fun setHourWeatherViewPagerState() {
+        viewModel.let { vm ->
             vm.weather?.let { weather ->
                 setTemperature(
                     binding.weatherNightBlock1.temperature,
@@ -232,4 +329,16 @@ class ViewPagerFragment : Fragment() {
     }
 
     private fun getDegrees() = prefs.getBoolean(KEY_DEGREES, true)
+
+    companion object {
+        fun newInstance(location: LocationEntity): ViewPagerFragment {
+            val fragment = ViewPagerFragment()
+            val bundle = Bundle()
+            bundle.putParcelable(LOCATION_KEY, location)
+            fragment.arguments = bundle
+            return fragment
+        }
+
+        private const val LOCATION_KEY = "LOCATION_KEY"
+    }
 }

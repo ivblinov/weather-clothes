@@ -13,6 +13,7 @@ import com.weatherclothes.artist.presentation.screens.main.MainFragment
 import com.weatherclothes.artist.presentation.screens.main.MainViewModel
 import com.weatherclothes.artist.presentation.screens.main.ViewPagerFragment
 import com.weatherclothes.artist.presentation.screens.main.ViewPagerViewModel
+import com.weatherclothes.artist.presentation.screens.permissions.PermissionsFragment
 import com.weatherclothes.artist.presentation.screens.places.PlacesFragment
 import com.weatherclothes.artist.presentation.screens.places.PlacesViewModel
 import com.weatherclothes.artist.presentation.screens.search.SearchFragment
@@ -54,6 +55,8 @@ interface AppComponent {
     fun inject(placesFragment: PlacesFragment)
 
     fun inject(searchFragment: SearchFragment)
+
+    fun inject(permissionsFragment: PermissionsFragment)
 
     fun mainViewModel(): MainViewModel.Factory
 

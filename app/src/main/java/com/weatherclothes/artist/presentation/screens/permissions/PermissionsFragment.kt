@@ -1,60 +1,95 @@
 package com.weatherclothes.artist.presentation.screens.permissions
 
+import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.weatherclothes.artist.R
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.weatherclothes.artist.databinding.FragmentPermissionsBinding
+import com.weatherclothes.artist.presentation.screens.main.MainFragment.Companion.REQUIRED_PERMISSIONS
+import com.weatherclothes.artist.presentation.screens.main.MainViewModel
+import com.weatherclothes.artist.utils.MainViewModelFactory
+import com.weatherclothes.artist.utils.appComponent
+import javax.inject.Inject
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [PermissionsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class PermissionsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+    private var _binding: FragmentPermissionsBinding? = null
+    private val binding get() = _binding!!
+
+    private var mainViewModel: MainViewModel? = null
+
+    @Inject
+    lateinit var mainViewModelFactory: MainViewModelFactory
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        inject()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_permissions, container, false)
+        mainViewModel =
+            ViewModelProvider(requireActivity(), mainViewModelFactory)[MainViewModel::class.java]
+        _binding = FragmentPermissionsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.grantPermission.setOnClickListener {
+            openAppSettings()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            val checkPermissions = checkPermissions()
+            if (checkPermissions) {
+                mainViewModel?.update()
+            }
+        }
+    }
+
+    fun inject() {
+        requireContext().appComponent().inject(this)
+    }
+
+    private fun checkPermissions(): Boolean {
+        return (REQUIRED_PERMISSIONS.all { permission ->
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                permission
+            ) == PackageManager.PERMISSION_GRANTED
+        })
+    }
+
+    private fun openAppSettings() {
+        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+            data = Uri.fromParts("package", "com.weatherclothes.artist", null)
+        }
+        startActivityForResult(intent, LOCATION_PERMISSION_REQUEST_CODE)
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment PermissionsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            PermissionsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 100
     }
 }

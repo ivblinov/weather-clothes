@@ -1,6 +1,7 @@
 package com.weatherclothes.artist.presentation.screens.main
 
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,6 +20,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+private const val TAG = "MyLog"
 class MainViewModel @AssistedInject constructor(
     private val interactor: CurrentWeatherInteractor,
     private val locationsInteractor: GetLocationsInteractor,

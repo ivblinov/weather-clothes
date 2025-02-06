@@ -104,26 +104,6 @@ class MainFragment : Fragment() {
 
         subscribe()
 
-        viewPager = binding.viewPager
-        tabLayout = binding.tabLayout
-
-        val fragments = mutableListOf<Fragment>(ViewPagerFragment())
-        val titles = mutableListOf<String>(getString(R.string.your_location))
-        viewModel?.locations?.forEach {
-            val fragment = ViewPagerFragment.newInstance(it)
-            fragments.add(fragment)
-            titles.add(it.name)
-        }
-        adapter = WeatherLocationViewPagerAdapter(this.requireActivity(), fragments, titles)
-        viewPager.adapter = adapter
-
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            if (position == 0)
-//                tab.setIcon(R.drawable.ic_tab_layout)
-                tab.customView = LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab_first, null)
-            tab.text = adapter.getTitle(position)
-        }.attach()
-
         val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
         checkFirstLogin(permissionRequested)
 
@@ -196,11 +176,10 @@ class MainFragment : Fragment() {
                                 binding.error.visibility = View.VISIBLE
                             }
                             MainState.Update -> {
-                                hideProgressBar()
-                                binding.error.visibility = View.GONE
-                                binding.viewPager.visibility = View.VISIBLE
-                                val permissionRequested = prefsPermission.getBoolean(KEY_PERMISSION_REQUESTED, false)
-                                checkFirstLogin(permissionRequested)
+                                requireActivity().run {
+                                    finish()
+                                    startActivity(intent)
+                                }
                             }
                         }
                     }
@@ -260,7 +239,29 @@ class MainFragment : Fragment() {
         }
     }
 
+    private fun createViewPager(fragment: Fragment) {
+        viewPager = binding.viewPager
+        tabLayout = binding.tabLayout
+
+        val fragments = mutableListOf<Fragment>(fragment)
+        val titles = mutableListOf<String>(getString(R.string.your_location))
+        viewModel?.locations?.forEach {
+            val fragment = ViewPagerFragment.newInstance(it)
+            fragments.add(fragment)
+            titles.add(it.name)
+        }
+        adapter = WeatherLocationViewPagerAdapter(this.requireActivity(), fragments, titles)
+        viewPager.adapter = adapter
+
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            if (position == 0)
+                tab.customView = LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab_first, null)
+            tab.text = adapter.getTitle(position)
+        }.attach()
+    }
+
     private fun onPermissionsGranted() {
+        createViewPager(ViewPagerFragment())
         if (isInternetAvailable(requireContext())) {
             getLocation()
         } else {
@@ -269,7 +270,7 @@ class MainFragment : Fragment() {
     }
 
     private fun onPermissionsDenied() {
-        adapter.addFragment(PermissionsFragment(), getString(R.string.your_location))
+        createViewPager(PermissionsFragment())
     }
 
     private fun requestLocation(

@@ -165,7 +165,8 @@ class MainFragment : Fragment() {
                     viewModel?.mainState?.collect { state ->
                         when (state) {
                             MainState.Loading -> {
-                                showProgressBar()
+                                if (viewModel?.weather == null)
+                                    showProgressBar()
                             }
                             MainState.Success -> {
                                 hideProgressBar()

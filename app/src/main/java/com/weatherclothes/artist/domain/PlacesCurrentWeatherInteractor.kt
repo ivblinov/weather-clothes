@@ -1,20 +1,20 @@
 package com.weatherclothes.artist.domain
 
 import com.weatherclothes.artist.data.repositories.Repository
-import com.weatherclothes.artist.domain.models.CurrentWeather
+import com.weatherclothes.artist.domain.models.PlacesCurrentWeather
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class CurrentWeatherInteractor @Inject constructor(
+class PlacesCurrentWeatherInteractor @Inject constructor(
     private val repository: Repository
 ) {
 
-    suspend fun loadWeatherOfCurrentLocation(
+    suspend fun loadPlacesWeather(
         latitude: Double,
         longitude: Double
-    ): CurrentWeather? {
-        return repository.loadWeatherOfCurrentLocation(
+    ): PlacesCurrentWeather? {
+        return repository.loadPlacesWeather(
             latitude = latitude,
             longitude = longitude
         )

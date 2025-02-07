@@ -62,6 +62,10 @@
     <style name="TextMainAccentStyle" parent="Text">
         <item name="android:fontFamily">@font/instrument_sans_bold</item>
     </style>
+    
+    <style name="TextTemperatureItemPlaces" parent="Text">
+        <item name="android:textSize">32sp</item>
+    </style>
 
     <style name="TextLoadScreenStyle">
         <item name="fontFamily">@font/instrument_sans_regular</item>

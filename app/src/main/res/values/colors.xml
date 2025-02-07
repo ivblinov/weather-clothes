@@ -19,4 +19,6 @@
     <color name="tabSelectedTextColor">#87E35A</color>
     <color name="tabTextColorWhite">#FEFFFF</color>
 
+    <color name="colorBgSecondary">#E0E6ED</color>
+
 </resources>

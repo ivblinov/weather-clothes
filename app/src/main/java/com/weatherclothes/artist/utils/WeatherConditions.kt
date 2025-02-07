@@ -296,4 +296,11 @@ object WeatherConditions {
             else -> smallIconMap[code]
         }
     }
+
+    fun getSmallIconForItemPlaces(code: Int): Int? {
+        return when {
+            smallIconNightMap.containsKey(code) -> smallIconNightMap[code]
+            else -> smallIconMap[code]
+        }
+    }
 }

@@ -1,6 +1,7 @@
 package com.weatherclothes.artist.presentation.screens.places
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,10 +15,13 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.weatherclothes.artist.databinding.FragmentPlacesBinding
 import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.R
+import com.weatherclothes.artist.presentation.screens.main.KEY_DEGREES
+import com.weatherclothes.artist.presentation.screens.places.recyclerView.PlacesAdapter
 import com.weatherclothes.artist.utils.appComponent
 import com.weatherclothes.artist.utils.isInternetAvailable
 import com.weatherclothes.artist.utils.lazyViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val TAG = "MyLog"
 class PlacesFragment : Fragment() {
@@ -28,6 +32,9 @@ class PlacesFragment : Fragment() {
     val viewModel: PlacesViewModel by lazyViewModel {
         requireContext().appComponent().placesViewModel().create()
     }
+
+    @Inject
+    lateinit var prefsPermission: SharedPreferences
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -58,6 +65,8 @@ class PlacesFragment : Fragment() {
 
         subscribe()
 
+        binding.placesRV.adapter = PlacesAdapter(degrees = getDegrees())
+
         binding.addPlace.setOnClickListener {
             viewModel.openSearch()
         }
@@ -87,10 +96,10 @@ class PlacesFragment : Fragment() {
                             }
                             MainState.Success -> {
                                 hideError()
-                                Log.d(
-                                    TAG,
-                                    "subscribe: weatherLocations = ${viewModel.weatherLocations}"
-                                )
+                                if (viewModel.weatherLocations.isEmpty())
+                                    showNotLocation()
+                                else hideNotLocation()
+                                getPlacesAdapter().setList(viewModel.weatherLocations)
                             }
                             MainState.Error -> {
                                 showError()
@@ -103,6 +112,14 @@ class PlacesFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun showNotLocation() {
+        binding.notLocationTV.visibility = View.VISIBLE
+    }
+
+    private fun hideNotLocation() {
+        binding.notLocationTV.visibility = View.INVISIBLE
     }
 
     private fun showError() {
@@ -123,4 +140,8 @@ class PlacesFragment : Fragment() {
         else
             viewModel.setErrorState()
     }
+
+    private fun getDegrees() = prefsPermission.getBoolean(KEY_DEGREES, true)
+
+    private fun getPlacesAdapter(): PlacesAdapter = binding.placesRV.adapter as PlacesAdapter
 }

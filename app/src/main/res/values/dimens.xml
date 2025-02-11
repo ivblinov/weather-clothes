@@ -52,6 +52,7 @@
     <dimen name="space_between_icon_and_text_button">4dp</dimen>
     <dimen name="layout_height_item_places">74dp</dimen>
     <dimen name="layout_margin_start_item_places">16dp</dimen>
+    <dimen name="layout_margin_end_icon_delete">12dp</dimen>
 
     <!--  Search Fragment  -->
     <dimen name="hint_text_size">16sp</dimen>

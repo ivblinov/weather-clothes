@@ -1,6 +1,8 @@
 package com.weatherclothes.artist.presentation.screens.places.recyclerView
 
 import android.annotation.SuppressLint
+import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -8,10 +10,14 @@ import com.weatherclothes.artist.databinding.ItemPlacesBinding
 import com.weatherclothes.artist.domain.models.PlacesCurrentWeather
 import com.weatherclothes.artist.utils.WeatherConditions
 
+private const val TAG = "MyLog"
 class PlacesAdapter(
     private var placesList: MutableList<PlacesCurrentWeather?> = mutableListOf(),
     private val degrees: Boolean,
-) : RecyclerView.Adapter<PlacesAdapter.ViewHolder>() {
+    private val itemSelectedColor: Int,
+    private val colorBgSecondary: Int,
+    private val onItemMoved: (Int, Int) -> Unit,
+) : RecyclerView.Adapter<PlacesAdapter.ViewHolder>(), HelperAdapter {
 
     @SuppressLint("NotifyDataSetChanged")
     fun setList(list: MutableList<PlacesCurrentWeather?>) {
@@ -25,6 +31,8 @@ class PlacesAdapter(
     ): ViewHolder = ViewHolder(
         binding = getBinding(parent),
         degrees = degrees,
+        itemSelectedColor = itemSelectedColor,
+        colorBgSecondary = colorBgSecondary,
     )
 
     override fun onBindViewHolder(
@@ -40,10 +48,16 @@ class PlacesAdapter(
     private fun getBinding(parent: ViewGroup): ItemPlacesBinding =
         ItemPlacesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
+    override fun itemMove(from: Int, to: Int) {
+        onItemMoved.invoke(from, to)
+    }
+
     class ViewHolder(
         val binding: ItemPlacesBinding,
         private val degrees: Boolean,
-    ) : RecyclerView.ViewHolder(binding.root) {
+        private val itemSelectedColor: Int,
+        private val colorBgSecondary: Int,
+    ) : RecyclerView.ViewHolder(binding.root), HelperViewHolder {
 
         fun onBind(weather: PlacesCurrentWeather?) {
 
@@ -63,6 +77,14 @@ class PlacesAdapter(
                 }
                 binding.temperature.text = temperature
             }
+        }
+
+        override fun onItemSelected() {
+            binding.foreground.setBackgroundResource(itemSelectedColor)
+        }
+
+        override fun onItemClear() {
+            binding.foreground.setBackgroundResource(colorBgSecondary)
         }
     }
 }

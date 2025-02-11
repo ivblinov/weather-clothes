@@ -20,6 +20,9 @@ class DbRepository @Inject constructor(
             localSource.add(mapper.mapToLocationEntity(location))
         } else 0L
 
+    suspend fun addLocationEntity(location: LocationEntity): Long =
+        localSource.add(mapper.mapToLocationEntityDb(location))
+
     suspend fun checkInTable(location: SearchLocation): Boolean {
         val locations = localSource.getAll().map { mapper.mapToSearchLocation(it) }
         return locations.contains(location)
@@ -27,4 +30,6 @@ class DbRepository @Inject constructor(
 
     suspend fun getLocations(): List<LocationEntity> =
         localSource.getAll().map { getLocationsMapperDb.mapToLocationEntity(it) }
+
+    suspend fun clear() = localSource.clear()
 }

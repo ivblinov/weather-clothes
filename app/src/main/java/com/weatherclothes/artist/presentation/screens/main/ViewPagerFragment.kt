@@ -3,6 +3,7 @@ package com.weatherclothes.artist.presentation.screens.main
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +28,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.getValue
 
+private const val TAG = "MyLog"
 class ViewPagerFragment : Fragment() {
 
     private var _binding: FragmentViewPagerBinding? = null

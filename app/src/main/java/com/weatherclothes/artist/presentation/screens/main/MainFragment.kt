@@ -149,9 +149,14 @@ class MainFragment : Fragment() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+
     }
 
     fun inject() {
@@ -251,7 +256,8 @@ class MainFragment : Fragment() {
             fragments.add(fragment)
             titles.add(it.name)
         }
-        adapter = WeatherLocationViewPagerAdapter(this.requireActivity(), fragments, titles)
+
+        val adapter = WeatherLocationViewPagerAdapter(this.requireActivity(), fragments, titles)
         viewPager.adapter = adapter
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->

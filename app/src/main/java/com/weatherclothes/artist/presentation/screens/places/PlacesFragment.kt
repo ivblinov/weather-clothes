@@ -12,11 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.weatherclothes.artist.databinding.FragmentPlacesBinding
-import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.R
+import com.weatherclothes.artist.databinding.FragmentPlacesBinding
 import com.weatherclothes.artist.presentation.screens.main.KEY_DEGREES
 import com.weatherclothes.artist.presentation.screens.places.recyclerView.PlacesAdapter
+import com.weatherclothes.artist.presentation.screens.places.recyclerView.swipeToDelete
+import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.utils.appComponent
 import com.weatherclothes.artist.utils.isInternetAvailable
 import com.weatherclothes.artist.utils.lazyViewModel
@@ -65,7 +66,12 @@ class PlacesFragment : Fragment() {
 
         subscribe()
 
-        binding.placesRV.adapter = PlacesAdapter(degrees = getDegrees())
+        binding.placesRV.adapter = PlacesAdapter(
+            degrees = getDegrees(),
+            itemSelectedColor = getItemSelectedColor(),
+            colorBgSecondary = getColorBgSecondary(),
+            onItemMoved = viewModel::itemMove,
+        )
 
         binding.addPlace.setOnClickListener {
             viewModel.openSearch()
@@ -73,6 +79,11 @@ class PlacesFragment : Fragment() {
 
         binding.tryAgain.setOnClickListener {
             viewModel.setUpdateState()
+        }
+
+        swipeToDelete(binding.placesRV) { position ->
+
+            Log.d(TAG, "position = $position")
         }
     }
 
@@ -144,4 +155,8 @@ class PlacesFragment : Fragment() {
     private fun getDegrees() = prefsPermission.getBoolean(KEY_DEGREES, true)
 
     private fun getPlacesAdapter(): PlacesAdapter = binding.placesRV.adapter as PlacesAdapter
+
+    private fun getItemSelectedColor() = R.drawable.bg_item_selected_color
+
+    private fun getColorBgSecondary() = R.drawable.bg_item_places
 }

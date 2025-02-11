@@ -13,4 +13,7 @@ abstract class LocationDao {
 
     @Query("SELECT * FROM Location")
     abstract suspend fun getAll(): List<LocationEntityDb>
+
+    @Query("DELETE FROM Location")
+    abstract suspend fun clear()
 }

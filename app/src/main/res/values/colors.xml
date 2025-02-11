@@ -21,4 +21,7 @@
 
     <color name="colorBgSecondary">#E0E6ED</color>
 
+    <color name="colorDeleteBg">#E84D4D</color>
+    <color name="colorItemActiveMove">#CAD6E2</color>
+
 </resources>

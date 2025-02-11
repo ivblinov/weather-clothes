@@ -1,13 +1,14 @@
 package com.weatherclothes.artist.presentation.screens.places
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.weatherclothes.artist.domain.AddLocationEntityInteractor
+import com.weatherclothes.artist.domain.ClearTableInteractor
 import com.weatherclothes.artist.domain.CurrentWeatherInteractor
 import com.weatherclothes.artist.domain.GetLocationsInteractor
+import com.weatherclothes.artist.domain.PlacesCurrentWeatherInteractor
 import com.weatherclothes.artist.domain.models.LocationEntity
 import com.weatherclothes.artist.domain.models.PlacesCurrentWeather
-import com.weatherclothes.artist.domain.PlacesCurrentWeatherInteractor
 import com.weatherclothes.artist.presentation.navigation.MainRouter
 import com.weatherclothes.artist.presentation.states.MainState
 import dagger.assisted.AssistedFactory
@@ -22,6 +23,8 @@ private const val TAG = "MyLog"
 class PlacesViewModel @AssistedInject constructor(
     private val interactor: GetLocationsInteractor,
     private val currentWeatherInteractor: CurrentWeatherInteractor,
+    private val clearTableInteractor: ClearTableInteractor,
+    private val addLocationEntityInteractor: AddLocationEntityInteractor,
     private val placesCurrentWeatherInteractor: PlacesCurrentWeatherInteractor,
     private val router: MainRouter,
 ) : ViewModel() {
@@ -49,13 +52,11 @@ class PlacesViewModel @AssistedInject constructor(
     fun getLocations() {
         viewModelScope.launch(Dispatchers.IO) {
             _placeState.value = MainState.Loading
-            Log.d(TAG, "getLocations: start")
             locations = interactor.getLocations()
             locations.forEach {
                 getWeatherLocation(it)
             }
             _placeState.value = MainState.Success
-            Log.d(TAG, "getLocations: end")
         }
     }
 
@@ -66,6 +67,19 @@ class PlacesViewModel @AssistedInject constructor(
                 locationEntity.lon.toDouble()
             )
         )
+    }
+
+    fun itemMove(from: Int, to: Int) {
+        val cities = locations.toMutableList()
+        val moveCity = cities.removeAt(from)
+        cities.add(to, moveCity)
+        locations = cities.toList()
+        viewModelScope.launch(Dispatchers.IO) {
+            clearTableInteractor.clear()
+            cities.forEach {
+                addLocationEntityInteractor.addLocationEntity(it)
+            }
+        }
     }
 
     @AssistedFactory

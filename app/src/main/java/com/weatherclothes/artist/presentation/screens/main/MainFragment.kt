@@ -27,11 +27,14 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentMainBinding
+import com.weatherclothes.artist.domain.models.LocationEntity
+import com.weatherclothes.artist.presentation.screens.main.WeatherLocationViewPagerAdapter
 import com.weatherclothes.artist.presentation.screens.permissions.PermissionsFragment
 import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.utils.MainViewModelFactory
 import com.weatherclothes.artist.utils.appComponent
 import com.weatherclothes.artist.utils.isInternetAvailable
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -58,7 +61,7 @@ class MainFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
-    private lateinit var adapter: WeatherLocationViewPagerAdapter
+    private var adapter: WeatherLocationViewPagerAdapter? = null
 
     private var viewModel: MainViewModel? = null
 
@@ -77,6 +80,7 @@ class MainFragment : Fragment() {
 
     private var sex = true
     private var degrees = true
+    private var currentItemViewPager = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -89,11 +93,11 @@ class MainFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         viewModel =
             ViewModelProvider(requireActivity(), mainViewModelFactory)[MainViewModel::class.java]
 
         viewModel?.getAllLocations()
-
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -149,8 +153,20 @@ class MainFragment : Fragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
+//        Log.d(TAG, "onResume: currentItem = ${viewPager.currentItem}")
+
+        viewPager.currentItem = currentItemViewPager
+//        Log.d(TAG, "onResume: afterCurrentItem = ${viewPager.currentItem}")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        currentItemViewPager = viewPager.currentItem
+//        Log.d(TAG, "onPause: currentItem = $currentItemViewPager")
+        viewPager.currentItem = 0
+//        Log.d(TAG, "onPause: afterCurrentItem = ${viewPager.currentItem}")
     }
 
     override fun onDestroyView() {
@@ -245,30 +261,33 @@ class MainFragment : Fragment() {
         }
     }
 
-    private fun createViewPager(fragment: Fragment) {
+    private fun createViewPager(permissionsFlag: Boolean) {
+//        adapter?.changeFlag(permissionsFlag)
+
+        val locationsList = viewModel?.locations?.toMutableList()
+
+        Log.d(TAG, "createViewPager: locations = $locationsList")
+
         viewPager = binding.viewPager
         tabLayout = binding.tabLayout
 
-        val fragments = mutableListOf<Fragment>(fragment)
-        val titles = mutableListOf<String>(getString(R.string.your_location))
-        viewModel?.locations?.forEach {
-            val fragment = ViewPagerFragment.newInstance(it)
-            fragments.add(fragment)
-            titles.add(it.name)
-        }
+        viewPager.adapter = null
 
-        val adapter = WeatherLocationViewPagerAdapter(this.requireActivity(), fragments, titles)
+        adapter = WeatherLocationViewPagerAdapter(this, locationsList, permissionsFlag)
         viewPager.adapter = adapter
+
+//        locationsList?.let { adapter?.updateLocations(it) }
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             if (position == 0)
                 tab.customView = LayoutInflater.from(requireContext()).inflate(R.layout.custom_tab_first, null)
-            tab.text = adapter.getTitle(position)
+            val title = locationsList?.getOrNull(position - 1)?.name
+            tab.text = title?: ""
         }.attach()
     }
 
     private fun onPermissionsGranted() {
-        createViewPager(ViewPagerFragment())
+        createViewPager(true)
         if (isInternetAvailable(requireContext())) {
             getLocation()
         } else {
@@ -277,7 +296,7 @@ class MainFragment : Fragment() {
     }
 
     private fun onPermissionsDenied() {
-        createViewPager(PermissionsFragment())
+        createViewPager(false)
     }
 
     private fun requestLocation(

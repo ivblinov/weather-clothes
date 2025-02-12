@@ -1,31 +1,67 @@
 package com.weatherclothes.artist.presentation.screens.main
 
-import android.annotation.SuppressLint
+import android.util.Log
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.weatherclothes.artist.domain.models.LocationEntity
 import com.weatherclothes.artist.presentation.screens.permissions.PermissionsFragment
 
+private const val TAG = "MyLog"
 class WeatherLocationViewPagerAdapter(
-    fragmentActivity: FragmentActivity,
-    private val fragments: MutableList<Fragment>,
-    private val titles: MutableList<String>,
-) : FragmentStateAdapter(fragmentActivity) {
+    fragment: Fragment,
+    private val location: MutableList<LocationEntity>?,
+    private val permissionFlag: Boolean,
+) : FragmentStateAdapter(fragment) {
 
-//    @SuppressLint("NotifyDataSetChanged")
-//    fun updateData(newFragments: List<Fragment>, newTitles: List<String>) {
-//        fragments.clear()
-//        fragments.addAll(newFragments)
-//
-//        titles.clear()
-//        titles.addAll(newTitles)
-//
-//        notifyDataSetChanged()
-//    }
+    private var permissionsFlag: Boolean = true
 
-    override fun getItemCount() = fragments.size
+    init {
 
-    override fun createFragment(position: Int) = fragments[position]
+//        Log.d(TAG, "createFragment: list = $location")
+    }
 
-    fun getTitle(position: Int): String = titles[position]
+    fun changeFlag(flag: Boolean) {
+        permissionsFlag = flag
+    }
+
+    fun updateLocations(newLocations: MutableList<LocationEntity>) {
+        location?.clear()
+        location?.addAll(newLocations)
+        notifyDataSetChanged()
+    }
+
+    override fun getItemCount(): Int {
+        var count = 1
+        location?.size?.let {
+            count += it
+        }
+        Log.d(TAG, "getItemCount: = $count")
+        return count
+    }
+
+    override fun createFragment(position: Int): Fragment {
+//        Log.d(TAG, "createFragment: position")
+        return when {
+
+            position == 0 && permissionsFlag -> {
+                ViewPagerFragment()
+            }
+
+            position == 0 && !permissionsFlag -> {
+                PermissionsFragment()
+            }
+
+            else -> {
+
+
+                var locationEntity: LocationEntity? = null
+                try {
+                    locationEntity = location?.get(position - 1)
+//                    Log.d(TAG, "createFragment: locationEntity = $locationEntity")
+                } catch (_: IndexOutOfBoundsException) { }
+
+                ViewPagerFragment.newInstance(locationEntity)
+            }
+        }
+    }
 }

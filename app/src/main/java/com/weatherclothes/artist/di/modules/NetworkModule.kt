@@ -6,6 +6,7 @@ import dagger.Provides
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 private const val BASE_URL = "https://api.weatherapi.com/"
@@ -34,8 +35,11 @@ class NetworkModule {
 
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
-        val client = OkHttpClient.Builder().build()
-        client.connectTimeoutMillis()
+        val client = OkHttpClient.Builder()
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(10, TimeUnit.SECONDS)
+            .build()
+//        client.connectTimeoutMillis()
         return client
     }
 }

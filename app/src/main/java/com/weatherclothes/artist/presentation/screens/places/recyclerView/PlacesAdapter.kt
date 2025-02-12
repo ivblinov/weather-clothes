@@ -11,6 +11,7 @@ import com.weatherclothes.artist.domain.models.PlacesCurrentWeather
 import com.weatherclothes.artist.utils.WeatherConditions
 
 private const val TAG = "MyLog"
+
 class PlacesAdapter(
     private var placesList: MutableList<PlacesCurrentWeather?> = mutableListOf(),
     private val degrees: Boolean,
@@ -41,6 +42,14 @@ class PlacesAdapter(
     ) {
         val weather = placesList[position]
         holder.onBind(weather)
+        holder.binding.iconDelete.apply {
+            isClickable = true
+            isFocusable = true
+            bringToFront()
+            setOnClickListener {
+                Log.d(TAG, "onDelete")
+            }
+        }
     }
 
     override fun getItemCount(): Int = placesList.size

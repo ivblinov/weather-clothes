@@ -61,12 +61,15 @@ class PlacesViewModel @AssistedInject constructor(
     }
 
     suspend fun getWeatherLocation(locationEntity: LocationEntity) {
-        weatherLocations.add(
-            placesCurrentWeatherInteractor.loadPlacesWeather(
-                locationEntity.lat.toDouble(),
-                locationEntity.lon.toDouble()
-            )
+        val cityWeather = placesCurrentWeatherInteractor.loadPlacesWeather(
+            locationEntity.lat.toDouble(),
+            locationEntity.lon.toDouble()
         )
+        if (cityWeather == null) {
+            setErrorState()
+        } else {
+            weatherLocations.add(cityWeather)
+        }
     }
 
     fun itemMove(from: Int, to: Int) {

@@ -2,9 +2,11 @@ package com.weatherclothes.artist.presentation.screens.places
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
@@ -12,6 +14,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.RecyclerView
 import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentPlacesBinding
 import com.weatherclothes.artist.presentation.screens.main.KEY_DEGREES

@@ -333,7 +333,7 @@ class ViewPagerFragment : Fragment() {
     private fun getDegrees() = prefs.getBoolean(KEY_DEGREES, true)
 
     companion object {
-        fun newInstance(location: LocationEntity): ViewPagerFragment {
+        fun newInstance(location: LocationEntity?): ViewPagerFragment {
             val fragment = ViewPagerFragment()
             val bundle = Bundle()
             bundle.putParcelable(LOCATION_KEY, location)

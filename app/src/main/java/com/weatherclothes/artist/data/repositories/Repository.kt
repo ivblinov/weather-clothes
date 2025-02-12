@@ -10,6 +10,7 @@ import com.weatherclothes.artist.domain.models.SearchLocation
 import javax.inject.Inject
 import javax.inject.Singleton
 
+private const val TAG = "MyLog"
 @Singleton
 class Repository @Inject constructor(
     private val weatherService: WeatherService,
@@ -22,22 +23,40 @@ class Repository @Inject constructor(
         latitude: Double,
         longitude: Double
     ): CurrentWeather? {
-        val q = "$latitude,$longitude"
-        val response = weatherService.getWeather(q = q, days = 2)
-        return mapper.mapToDomain(response.body())
+        try {
+            val q = "$latitude,$longitude"
+            val response = weatherService.getWeather(q = q, days = 2)
+            return if (response.isSuccessful)
+                mapper.mapToDomain(response.body())
+            else null
+        } catch (_: Exception) {
+            return null
+        }
     }
 
     suspend fun loadPlacesWeather(
         latitude: Double,
         longitude: Double
     ): PlacesCurrentWeather? {
-        val q = "$latitude,$longitude"
-        val response = weatherService.getPlacesWeather(q = q)
-        return placesMapper.mapToDomain(response.body())
+        try {
+            val q = "$latitude,$longitude"
+            val response = weatherService.getPlacesWeather(q = q)
+            return if (response.isSuccessful)
+                placesMapper.mapToDomain(response.body())
+            else null
+        } catch (_: Exception) {
+            return null
+        }
     }
 
     suspend fun loadSearchLocation(nameLocation: String): MutableList<SearchLocation> {
-        val response = weatherService.getPlace(q = nameLocation)
-        return searchLocationMapper.mapToDomain(response.body())
+        try {
+            val response = weatherService.getPlace(q = nameLocation)
+            return if (response.isSuccessful)
+                searchLocationMapper.mapToDomain(response.body())
+            else mutableListOf()
+        } catch (_: Exception) {
+            return mutableListOf()
+        }
     }
 }

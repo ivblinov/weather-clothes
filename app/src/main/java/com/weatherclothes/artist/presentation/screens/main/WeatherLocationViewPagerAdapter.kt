@@ -9,7 +9,7 @@ import com.weatherclothes.artist.presentation.screens.permissions.PermissionsFra
 private const val TAG = "MyLog"
 class WeatherLocationViewPagerAdapter(
     fragment: Fragment,
-    private val location: MutableList<LocationEntity>?,
+    private var location: List<LocationEntity>?,
     private val permissionFlag: Boolean,
 ) : FragmentStateAdapter(fragment) {
 
@@ -24,23 +24,21 @@ class WeatherLocationViewPagerAdapter(
         permissionsFlag = flag
     }
 
-    fun updateLocations(newLocations: MutableList<LocationEntity>) {
-        location?.clear()
-        location?.addAll(newLocations)
-        notifyDataSetChanged()
-    }
+//    fun updateLocations(newLocations: MutableList<LocationEntity>) {
+//        location?.clear()
+//        location?.addAll(newLocations)
+//        notifyDataSetChanged()
+//    }
 
     override fun getItemCount(): Int {
         var count = 1
         location?.size?.let {
             count += it
         }
-        Log.d(TAG, "getItemCount: = $count")
         return count
     }
 
     override fun createFragment(position: Int): Fragment {
-//        Log.d(TAG, "createFragment: position")
         return when {
 
             position == 0 && permissionsFlag -> {
@@ -52,16 +50,32 @@ class WeatherLocationViewPagerAdapter(
             }
 
             else -> {
-
-
                 var locationEntity: LocationEntity? = null
                 try {
                     locationEntity = location?.get(position - 1)
 //                    Log.d(TAG, "createFragment: locationEntity = $locationEntity")
                 } catch (_: IndexOutOfBoundsException) { }
 
-                ViewPagerFragment.newInstance(locationEntity)
+                ViewPagerFragment.newInstance(locationEntity, position)
             }
         }
     }
+
+//    override fun getItemId(position: Int): Long {
+//        Log.d(TAG, "getItemId: ")
+//        return if (position == 0)
+//            10000000.hashCode().toLong()
+//        else
+//            location?.get(position - 1)?.id?.plus(position).hashCode().toLong()
+//    }
+//
+//    override fun containsItem(itemId: Long): Boolean {
+//        Log.d(TAG, "containsItem: ")
+//        return location?.any { it.id.hashCode().toLong() == itemId } == true
+//    }
+
+//    fun updateItems(newItems: List<LocationEntity>?) {
+//        location = newItems
+//        notifyDataSetChanged()
+//    }
 }

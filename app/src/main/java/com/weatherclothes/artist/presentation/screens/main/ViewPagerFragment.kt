@@ -37,6 +37,7 @@ class ViewPagerFragment : Fragment() {
     private var mainViewModel: MainViewModel? = null
 
     private var city: LocationEntity? = null
+    private var position = 0
 
     val viewModel: ViewPagerViewModel by lazyViewModel {
         requireContext().appComponent().viewPagerViewModel().create()
@@ -57,14 +58,18 @@ class ViewPagerFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         city = arguments?.getParcelable(LOCATION_KEY)
+        position = arguments?.getInt(POSITION_KEY) ?: 0
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+
         mainViewModel =
             ViewModelProvider(requireActivity(), mainViewModelFactory)[MainViewModel::class.java]
+
+        checkCurrentCity(position)
 
         city?.let {
             if (isInternetAvailable(requireContext()))
@@ -332,15 +337,24 @@ class ViewPagerFragment : Fragment() {
 
     private fun getDegrees() = prefs.getBoolean(KEY_DEGREES, true)
 
+    private fun checkCurrentCity(position: Int) {
+        val locationsList = mainViewModel?.locations
+        val changedCity = locationsList?.getOrNull(position-1)
+        if (city != changedCity)
+            city = changedCity
+    }
+
     companion object {
-        fun newInstance(location: LocationEntity?): ViewPagerFragment {
+        fun newInstance(location: LocationEntity?, position: Int): ViewPagerFragment {
             val fragment = ViewPagerFragment()
             val bundle = Bundle()
             bundle.putParcelable(LOCATION_KEY, location)
+            bundle.putInt(POSITION_KEY, position)
             fragment.arguments = bundle
             return fragment
         }
 
         private const val LOCATION_KEY = "LOCATION_KEY"
+        private const val POSITION_KEY = "POSITION_KEY"
     }
 }

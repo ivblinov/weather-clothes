@@ -27,14 +27,10 @@ import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentMainBinding
-import com.weatherclothes.artist.domain.models.LocationEntity
-import com.weatherclothes.artist.presentation.screens.main.WeatherLocationViewPagerAdapter
-import com.weatherclothes.artist.presentation.screens.permissions.PermissionsFragment
 import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.utils.MainViewModelFactory
 import com.weatherclothes.artist.utils.appComponent
 import com.weatherclothes.artist.utils.isInternetAvailable
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -61,7 +57,6 @@ class MainFragment : Fragment() {
 
     private lateinit var viewPager: ViewPager2
     private lateinit var tabLayout: TabLayout
-    private var adapter: WeatherLocationViewPagerAdapter? = null
 
     private var viewModel: MainViewModel? = null
 
@@ -80,7 +75,6 @@ class MainFragment : Fragment() {
 
     private var sex = true
     private var degrees = true
-    private var currentItemViewPager = 0
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -153,26 +147,10 @@ class MainFragment : Fragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-//        Log.d(TAG, "onResume: currentItem = ${viewPager.currentItem}")
-
-        viewPager.currentItem = currentItemViewPager
-//        Log.d(TAG, "onResume: afterCurrentItem = ${viewPager.currentItem}")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        currentItemViewPager = viewPager.currentItem
-//        Log.d(TAG, "onPause: currentItem = $currentItemViewPager")
-        viewPager.currentItem = 0
-//        Log.d(TAG, "onPause: afterCurrentItem = ${viewPager.currentItem}")
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-
+        onDestroy()
     }
 
     fun inject() {
@@ -262,21 +240,12 @@ class MainFragment : Fragment() {
     }
 
     private fun createViewPager(permissionsFlag: Boolean) {
-//        adapter?.changeFlag(permissionsFlag)
-
-        val locationsList = viewModel?.locations?.toMutableList()
-
-        Log.d(TAG, "createViewPager: locations = $locationsList")
+        val locationsList = viewModel?.locations
+        val adapter = WeatherLocationViewPagerAdapter(this, locationsList, permissionsFlag)
 
         viewPager = binding.viewPager
         tabLayout = binding.tabLayout
-
-        viewPager.adapter = null
-
-        adapter = WeatherLocationViewPagerAdapter(this, locationsList, permissionsFlag)
         viewPager.adapter = adapter
-
-//        locationsList?.let { adapter?.updateLocations(it) }
 
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             if (position == 0)

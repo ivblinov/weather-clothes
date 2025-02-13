@@ -4,8 +4,10 @@ import android.content.res.Resources
 import android.graphics.Canvas
 import android.util.Log
 import android.view.View
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.weatherclothes.artist.R
 
 private const val TAG = "MyLog"
 fun swipeToDelete(recyclerView: RecyclerView, onDelete: (Int) -> Unit) {
@@ -95,6 +97,22 @@ fun swipeToDelete(recyclerView: RecyclerView, onDelete: (Int) -> Unit) {
 //                        Log.d(TAG, "onChildDraw: ")
 
                         if (dX < -iconWidth) {
+
+                            val itemView = viewHolder.itemView
+                            val icon = ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_delete)
+                            val intrinsicWidth = icon?.intrinsicWidth ?: 0
+                            val intrinsicHeight = icon?.intrinsicHeight ?: 0
+
+                            // Нарисовать иконку мусорной корзины
+                            icon?.setBounds(
+                                itemView.right - intrinsicWidth,
+                                itemView.top + (itemView.bottom - itemView.top - intrinsicHeight) / 2,
+                                itemView.right,
+                                itemView.top + (itemView.bottom - itemView.top + intrinsicHeight) / 2
+                            )
+                            icon?.draw(c)
+
+
                             Log.d(TAG, "dx < -iconWidth")
                             isSwipeActive = true // Отключаем свайп
                             viewHolder.binding.foreground.translationX = -iconWidth

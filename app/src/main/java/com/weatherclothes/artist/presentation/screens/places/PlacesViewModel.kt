@@ -2,14 +2,17 @@ package com.weatherclothes.artist.presentation.screens.places
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.DiffUtil
 import com.weatherclothes.artist.domain.AddLocationEntityInteractor
 import com.weatherclothes.artist.domain.ClearTableInteractor
 import com.weatherclothes.artist.domain.CurrentWeatherInteractor
+import com.weatherclothes.artist.domain.DeleteLocationInteractor
 import com.weatherclothes.artist.domain.GetLocationsInteractor
 import com.weatherclothes.artist.domain.PlacesCurrentWeatherInteractor
 import com.weatherclothes.artist.domain.models.LocationEntity
 import com.weatherclothes.artist.domain.models.PlacesCurrentWeather
 import com.weatherclothes.artist.presentation.navigation.MainRouter
+import com.weatherclothes.artist.presentation.screens.places.recyclerView.PlacesDiffUtilCallback
 import com.weatherclothes.artist.presentation.states.MainState
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -26,11 +29,13 @@ class PlacesViewModel @AssistedInject constructor(
     private val clearTableInteractor: ClearTableInteractor,
     private val addLocationEntityInteractor: AddLocationEntityInteractor,
     private val placesCurrentWeatherInteractor: PlacesCurrentWeatherInteractor,
+    private val deleteInteractor: DeleteLocationInteractor,
     private val router: MainRouter,
 ) : ViewModel() {
 
     var locations: List<LocationEntity> = listOf()
     var weatherLocations: MutableList<PlacesCurrentWeather?> = mutableListOf()
+    var newWeatherLocations: MutableList<PlacesCurrentWeather?> = mutableListOf()
 
     private val _placeState = MutableStateFlow<MainState>(MainState.Success)
     val placeState = _placeState.asStateFlow()
@@ -68,7 +73,7 @@ class PlacesViewModel @AssistedInject constructor(
         if (cityWeather == null) {
             setErrorState()
         } else {
-            weatherLocations.add(cityWeather)
+            newWeatherLocations.add(cityWeather)
         }
     }
 
@@ -83,6 +88,29 @@ class PlacesViewModel @AssistedInject constructor(
                 addLocationEntityInteractor.addLocationEntity(it)
             }
         }
+    }
+
+    fun deleteLocation(position: Int) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val location = locations.getOrNull(position)
+            location?.let {
+                deleteInteractor.deleteLocation(it)
+                locations = listOf()
+                weatherLocations.clear()
+                getLocations()
+            }
+        }
+    }
+
+    fun getDiffResult(): DiffUtil.DiffResult {
+        val diffCallback = PlacesDiffUtilCallback(weatherLocations, newWeatherLocations)
+        return DiffUtil.calculateDiff(diffCallback)
+    }
+
+    fun getNewWeatherLocationsList() = newWeatherLocations
+
+    fun updateWeatherLocationsList() {
+        weatherLocations = newWeatherLocations
     }
 
     @AssistedFactory

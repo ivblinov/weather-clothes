@@ -38,4 +38,15 @@ class AddLocationMapperDb @Inject constructor() {
             lon = lon,
         )
     }
+
+    fun mapToLocationEntityDbWithId(location: LocationEntity): LocationEntityDb = with(location) {
+        LocationEntityDb(
+            id = id,
+            name = name,
+            region = region,
+            country = country,
+            lat = lat,
+            lon = lon,
+        )
+    }
 }

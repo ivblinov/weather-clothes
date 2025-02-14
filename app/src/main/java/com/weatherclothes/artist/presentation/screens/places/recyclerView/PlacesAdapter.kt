@@ -1,7 +1,6 @@
 package com.weatherclothes.artist.presentation.screens.places.recyclerView
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -18,6 +17,7 @@ class PlacesAdapter(
     private val itemSelectedColor: Int,
     private val colorBgSecondary: Int,
     private val onItemMoved: (Int, Int) -> Unit,
+    private val onDeleteLocation: (Int) -> Unit,
 ) : RecyclerView.Adapter<PlacesAdapter.ViewHolder>(), HelperAdapter {
 
     @SuppressLint("NotifyDataSetChanged")
@@ -34,6 +34,7 @@ class PlacesAdapter(
         degrees = degrees,
         itemSelectedColor = itemSelectedColor,
         colorBgSecondary = colorBgSecondary,
+        onDeleteLocation = onDeleteLocation,
     )
 
     override fun onBindViewHolder(
@@ -42,14 +43,7 @@ class PlacesAdapter(
     ) {
         val weather = placesList[position]
         holder.onBind(weather)
-        holder.binding.iconDelete.apply {
-            isClickable = true
-            isFocusable = true
-            bringToFront()
-            setOnClickListener {
-                Log.d(TAG, "onDelete")
-            }
-        }
+        holder.onDeleteItem(position)
     }
 
     override fun getItemCount(): Int = placesList.size
@@ -66,7 +60,10 @@ class PlacesAdapter(
         private val degrees: Boolean,
         private val itemSelectedColor: Int,
         private val colorBgSecondary: Int,
+        private val onDeleteLocation: (Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root), HelperViewHolder {
+
+        var swipeFlag = true
 
         fun onBind(weather: PlacesCurrentWeather?) {
 
@@ -85,6 +82,15 @@ class PlacesAdapter(
                     if (it.current.tempF > 0) temperature = "+$temperature"
                 }
                 binding.temperature.text = temperature
+            }
+        }
+
+        fun onDeleteItem(position: Int) {
+            binding.iconDelete.setOnClickListener {
+
+                Log.d(TAG, "onDelete")
+                onDeleteLocation.invoke(position)
+                binding.foreground.translationX = 0f
             }
         }
 

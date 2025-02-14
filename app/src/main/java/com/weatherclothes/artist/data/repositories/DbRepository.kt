@@ -32,4 +32,7 @@ class DbRepository @Inject constructor(
         localSource.getAll().map { getLocationsMapperDb.mapToLocationEntity(it) }
 
     suspend fun clear() = localSource.clear()
+
+    suspend fun deleteLocation(location: LocationEntity) =
+        localSource.deleteLocation(mapper.mapToLocationEntityDbWithId(location))
 }

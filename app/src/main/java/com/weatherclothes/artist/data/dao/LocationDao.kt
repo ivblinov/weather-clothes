@@ -1,6 +1,7 @@
 package com.weatherclothes.artist.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.weatherclothes.artist.data.models_db.LocationEntityDb
@@ -16,4 +17,7 @@ abstract class LocationDao {
 
     @Query("DELETE FROM Location")
     abstract suspend fun clear()
+
+    @Delete
+    abstract suspend fun deleteLocation(location: LocationEntityDb)
 }

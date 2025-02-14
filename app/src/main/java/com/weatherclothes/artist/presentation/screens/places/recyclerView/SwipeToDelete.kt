@@ -1,16 +1,19 @@
 package com.weatherclothes.artist.presentation.screens.places.recyclerView
 
+import android.annotation.SuppressLint
 import android.content.res.Resources
 import android.graphics.Canvas
 import android.util.Log
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.weatherclothes.artist.R
 
 private const val TAG = "MyLog"
+
+@SuppressLint("ClickableViewAccessibility")
 fun swipeToDelete(recyclerView: RecyclerView, onDelete: (Int) -> Unit) {
+
+    var itemTouchHelper: ItemTouchHelper? = null
 
     var fromPosition = 0
     var toPosition = 0
@@ -20,9 +23,6 @@ fun swipeToDelete(recyclerView: RecyclerView, onDelete: (Int) -> Unit) {
         ItemTouchHelper.LEFT
                 or ItemTouchHelper.RIGHT
     ) {
-
-        var isSwipeActive = false
-
         override fun onMove(
             recyclerView: RecyclerView,
             viewHolder: RecyclerView.ViewHolder,
@@ -37,29 +37,13 @@ fun swipeToDelete(recyclerView: RecyclerView, onDelete: (Int) -> Unit) {
         }
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-            if (isSwipeActive) return
-
-            val position = viewHolder.adapterPosition
-
-            val viewHolder = viewHolder as PlacesAdapter.ViewHolder
-
-//            viewHolder.binding.foreground.isClickable = false
-//            viewHolder.binding.foreground.isFocusable = false
-//
-//            viewHolder.binding.iconDelete.isClickable = true
-//            viewHolder.binding.iconDelete.isFocusable = true
-
-//            viewHolder.binding.iconDelete.setOnClickListener {
-//                Log.d(TAG, "onSwiped: onDelete")
-//            }
-
             when (direction) {
                 ItemTouchHelper.LEFT -> {
-
                     Log.d(TAG, "onSwiped: left")
                 }
-                ItemTouchHelper.RIGHT -> {
 
+                ItemTouchHelper.RIGHT -> {
+                    Log.d(TAG, "onSwiped: right")
                 }
             }
         }
@@ -73,68 +57,20 @@ fun swipeToDelete(recyclerView: RecyclerView, onDelete: (Int) -> Unit) {
             actionState: Int,
             isCurrentlyActive: Boolean
         ) {
-
             val viewHolder = viewHolder as PlacesAdapter.ViewHolder
             val iconWidth = dpToPixel(56)
 
             if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
-
-//                if (dX > -iconWidth) {
-//                    Log.d(TAG, "onChildDraw: dX = $dX")
-//                    isSwipeActive = true
-//                    viewHolder.binding.foreground.translationX = dX
-//                } else {
-//                    Log.d(TAG, ": dX = $dX")
-//                    isSwipeActive = false
-//                    viewHolder.binding.foreground.translationX = -iconWidth
-//
-//                }
-
-                if (dX < 0) {
-                    if (viewHolder.binding.foreground.translationX != -iconWidth) {
-
-
-//                        Log.d(TAG, "onChildDraw: ")
-
+                viewHolder.binding.background.visibility = View.VISIBLE
+                if (viewHolder.binding.foreground.translationX != -iconWidth) {
+                    if (dX < 0) {
                         if (dX < -iconWidth) {
-
-                            val itemView = viewHolder.itemView
-                            val icon = ContextCompat.getDrawable(recyclerView.context, R.drawable.ic_delete)
-                            val intrinsicWidth = icon?.intrinsicWidth ?: 0
-                            val intrinsicHeight = icon?.intrinsicHeight ?: 0
-
-                            // Нарисовать иконку мусорной корзины
-                            icon?.setBounds(
-                                itemView.right - intrinsicWidth,
-                                itemView.top + (itemView.bottom - itemView.top - intrinsicHeight) / 2,
-                                itemView.right,
-                                itemView.top + (itemView.bottom - itemView.top + intrinsicHeight) / 2
-                            )
-                            icon?.draw(c)
-
-
-                            Log.d(TAG, "dx < -iconWidth")
-                            isSwipeActive = true // Отключаем свайп
                             viewHolder.binding.foreground.translationX = -iconWidth
-
                         } else {
-//                            Log.d(TAG, "else")
-                            isSwipeActive = false // Включаем свайп обратно
                             viewHolder.binding.foreground.translationX = dX
                         }
                     }
-                } else if (dX > 0) {
-//                    Log.d(TAG, "onChildDraw: dx = $dX")
-//                    viewHolder.binding.foreground.translationX = 0f
-//                    isSwipeActive = false
-//                    viewHolder.binding.foreground.isClickable = false
-//                    viewHolder.binding.foreground.isFocusable = false
-//
-//                    viewHolder.binding.iconDelete.isClickable = true
-//                    viewHolder.binding.iconDelete.isFocusable = true
                 }
-
-                viewHolder.binding.background.visibility = View.VISIBLE
             } else {
                 super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
             }
@@ -155,7 +91,7 @@ fun swipeToDelete(recyclerView: RecyclerView, onDelete: (Int) -> Unit) {
         }
     }
 
-    val itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
+    itemTouchHelper = ItemTouchHelper(itemTouchHelperCallback)
     itemTouchHelper.attachToRecyclerView(recyclerView)
 }
 

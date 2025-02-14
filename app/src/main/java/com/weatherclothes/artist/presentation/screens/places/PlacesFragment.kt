@@ -2,11 +2,9 @@ package com.weatherclothes.artist.presentation.screens.places
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
@@ -14,7 +12,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.RecyclerView
 import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentPlacesBinding
 import com.weatherclothes.artist.presentation.screens.main.KEY_DEGREES
@@ -74,6 +71,7 @@ class PlacesFragment : Fragment() {
             itemSelectedColor = getItemSelectedColor(),
             colorBgSecondary = getColorBgSecondary(),
             onItemMoved = viewModel::itemMove,
+            onDeleteLocation = viewModel::deleteLocation,
         )
 
         binding.addPlace.setOnClickListener {
@@ -85,7 +83,6 @@ class PlacesFragment : Fragment() {
         }
 
         swipeToDelete(binding.placesRV) { position ->
-
             Log.d(TAG, "position = $position")
         }
     }
@@ -110,10 +107,11 @@ class PlacesFragment : Fragment() {
                             }
                             MainState.Success -> {
                                 hideError()
+                                updateLocationListWithDiffUtil()
                                 if (viewModel.weatherLocations.isEmpty())
                                     showNotLocation()
                                 else hideNotLocation()
-                                getPlacesAdapter().setList(viewModel.weatherLocations)
+//                                getPlacesAdapter().setList(viewModel.weatherLocations)
                             }
                             MainState.Error -> {
                                 showError()
@@ -162,4 +160,13 @@ class PlacesFragment : Fragment() {
     private fun getItemSelectedColor() = R.drawable.bg_item_selected_color
 
     private fun getColorBgSecondary() = R.drawable.bg_item_places
+
+    private fun updateLocationListWithDiffUtil() {
+        val diffResult = viewModel.getDiffResult()
+        val newTaskList = viewModel.getNewWeatherLocationsList()
+        val adapter = getPlacesAdapter()
+        adapter.setList(newTaskList)
+        diffResult.dispatchUpdatesTo(adapter)
+        viewModel.updateWeatherLocationsList()
+    }
 }

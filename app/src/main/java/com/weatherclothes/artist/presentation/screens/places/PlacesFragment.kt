@@ -16,6 +16,8 @@ import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentPlacesBinding
 import com.weatherclothes.artist.presentation.screens.main.KEY_DEGREES
 import com.weatherclothes.artist.presentation.screens.places.recyclerView.PlacesAdapter
+import com.weatherclothes.artist.presentation.screens.places.recyclerView.UnderlayButton
+import com.weatherclothes.artist.presentation.screens.places.recyclerView.UnderlayButtonClickListener
 import com.weatherclothes.artist.presentation.screens.places.recyclerView.swipeToDelete
 import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.utils.appComponent
@@ -82,7 +84,21 @@ class PlacesFragment : Fragment() {
             viewModel.setUpdateState()
         }
 
-        swipeToDelete(binding.placesRV) { position ->
+        val buttonList = listOf<UnderlayButton>(
+            UnderlayButton(
+                requireContext(),
+                "Delete",
+                14f,
+                android.R.color.transparent,
+                R.drawable.ic_delete_transparent,
+                100,
+                object : UnderlayButtonClickListener {
+                    override fun onClick() {
+                        Log.d(TAG, "onClick: ")
+                    }
+                }))
+
+        swipeToDelete(binding.placesRV, buttonList) { position ->
             Log.d(TAG, "position = $position")
         }
     }

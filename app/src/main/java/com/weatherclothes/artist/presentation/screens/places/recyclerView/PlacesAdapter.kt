@@ -1,7 +1,5 @@
 package com.weatherclothes.artist.presentation.screens.places.recyclerView
 
-import android.annotation.SuppressLint
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,21 +7,16 @@ import com.weatherclothes.artist.databinding.ItemPlacesBinding
 import com.weatherclothes.artist.domain.models.PlacesCurrentWeather
 import com.weatherclothes.artist.utils.WeatherConditions
 
-private const val TAG = "MyLog"
-
 class PlacesAdapter(
     private var placesList: MutableList<PlacesCurrentWeather?> = mutableListOf(),
     private val degrees: Boolean,
     private val itemSelectedColor: Int,
     private val colorBgSecondary: Int,
     private val onItemMoved: (Int, Int) -> Unit,
-    private val onDeleteLocation: (Int) -> Unit,
 ) : RecyclerView.Adapter<PlacesAdapter.ViewHolder>(), HelperAdapter {
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun setList(list: MutableList<PlacesCurrentWeather?>) {
+    fun updateList(list: MutableList<PlacesCurrentWeather?>) {
         this.placesList = list
-        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(
@@ -34,16 +27,15 @@ class PlacesAdapter(
         degrees = degrees,
         itemSelectedColor = itemSelectedColor,
         colorBgSecondary = colorBgSecondary,
-        onDeleteLocation = onDeleteLocation,
     )
 
     override fun onBindViewHolder(
         holder: ViewHolder,
         position: Int
     ) {
+        holder.binding.foreground.translationX = 0f
         val weather = placesList[position]
         holder.onBind(weather)
-        holder.onDeleteItem(position)
     }
 
     override fun getItemCount(): Int = placesList.size
@@ -60,10 +52,7 @@ class PlacesAdapter(
         private val degrees: Boolean,
         private val itemSelectedColor: Int,
         private val colorBgSecondary: Int,
-        private val onDeleteLocation: (Int) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root), HelperViewHolder {
-
-        var swipeFlag = true
 
         fun onBind(weather: PlacesCurrentWeather?) {
 
@@ -82,15 +71,6 @@ class PlacesAdapter(
                     if (it.current.tempF > 0) temperature = "+$temperature"
                 }
                 binding.temperature.text = temperature
-            }
-        }
-
-        fun onDeleteItem(position: Int) {
-            binding.iconDelete.setOnClickListener {
-
-                Log.d(TAG, "onDelete")
-                onDeleteLocation.invoke(position)
-                binding.foreground.translationX = 0f
             }
         }
 

@@ -3,7 +3,6 @@ package com.weatherclothes.artist.presentation.screens.places
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.ItemTouchHelper
 import com.weatherclothes.artist.R
 import com.weatherclothes.artist.databinding.FragmentPlacesBinding
 import com.weatherclothes.artist.presentation.screens.main.KEY_DEGREES
+import com.weatherclothes.artist.presentation.screens.places.recyclerView.MoveHelper
 import com.weatherclothes.artist.presentation.screens.places.recyclerView.PlacesAdapter
-import com.weatherclothes.artist.presentation.screens.places.recyclerView.UnderlayButton
-import com.weatherclothes.artist.presentation.screens.places.recyclerView.UnderlayButtonClickListener
-import com.weatherclothes.artist.presentation.screens.places.recyclerView.swipeToDelete
 import com.weatherclothes.artist.presentation.states.MainState
 import com.weatherclothes.artist.utils.appComponent
 import com.weatherclothes.artist.utils.isInternetAvailable
@@ -26,7 +24,6 @@ import com.weatherclothes.artist.utils.lazyViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-private const val TAG = "MyLog"
 class PlacesFragment : Fragment() {
 
     private var _binding: FragmentPlacesBinding? = null
@@ -73,7 +70,6 @@ class PlacesFragment : Fragment() {
             itemSelectedColor = getItemSelectedColor(),
             colorBgSecondary = getColorBgSecondary(),
             onItemMoved = viewModel::itemMove,
-            onDeleteLocation = viewModel::deleteLocation,
         )
 
         binding.addPlace.setOnClickListener {
@@ -84,23 +80,28 @@ class PlacesFragment : Fragment() {
             viewModel.setUpdateState()
         }
 
-        val buttonList = listOf<UnderlayButton>(
-            UnderlayButton(
-                requireContext(),
-                "Delete",
-                14f,
-                android.R.color.transparent,
-                R.drawable.ic_delete_transparent,
-                100,
-                object : UnderlayButtonClickListener {
-                    override fun onClick() {
-                        Log.d(TAG, "onClick: ")
-                    }
-                }))
-
-        swipeToDelete(binding.placesRV, buttonList) { position ->
-            Log.d(TAG, "position = $position")
+        val moveHelper = object : MoveHelper(binding.placesRV) {
+            override fun instantiateUnderlayButton(position: Int): List<UnderlayButton> {
+                return listOf(
+                    UnderlayButton(
+                        requireContext(),
+                        "Delete",
+                        14f,
+                        android.R.color.transparent,
+                        R.drawable.ic_delete_transparent,
+                        100,
+                        object : UnderlayButtonClickListener {
+                            override fun onClick() {
+                                viewModel.deleteLocation(position)
+                            }
+                        }
+                    ),
+                )
+            }
         }
+
+        val itemTouchHelper = ItemTouchHelper(moveHelper)
+        itemTouchHelper.attachToRecyclerView(binding.placesRV)
     }
 
     override fun onDestroyView() {
@@ -121,17 +122,19 @@ class PlacesFragment : Fragment() {
                             MainState.Loading -> {
 
                             }
+
                             MainState.Success -> {
                                 hideError()
                                 updateLocationListWithDiffUtil()
                                 if (viewModel.weatherLocations.isEmpty())
                                     showNotLocation()
                                 else hideNotLocation()
-//                                getPlacesAdapter().setList(viewModel.weatherLocations)
                             }
+
                             MainState.Error -> {
                                 showError()
                             }
+
                             MainState.Update -> {
                                 loadWeather()
                             }
@@ -144,10 +147,12 @@ class PlacesFragment : Fragment() {
 
     private fun showNotLocation() {
         binding.notLocationTV.visibility = View.VISIBLE
+        binding.placesRV.visibility = View.INVISIBLE
     }
 
     private fun hideNotLocation() {
         binding.notLocationTV.visibility = View.INVISIBLE
+        binding.placesRV.visibility = View.VISIBLE
     }
 
     private fun showError() {
@@ -179,9 +184,9 @@ class PlacesFragment : Fragment() {
 
     private fun updateLocationListWithDiffUtil() {
         val diffResult = viewModel.getDiffResult()
-        val newTaskList = viewModel.getNewWeatherLocationsList()
+        val newWeatherLocation = viewModel.getNewWeatherLocationsList()
         val adapter = getPlacesAdapter()
-        adapter.setList(newTaskList)
+        adapter.updateList(newWeatherLocation)
         diffResult.dispatchUpdatesTo(adapter)
         viewModel.updateWeatherLocationsList()
     }

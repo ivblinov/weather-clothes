@@ -10,7 +10,6 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         android:layout_marginHorizontal="@dimen/layout_margin_horizontal_button"
         android:background="@drawable/bg_item_places_background"
         app:layout_constraintBottom_toBottomOf="parent"

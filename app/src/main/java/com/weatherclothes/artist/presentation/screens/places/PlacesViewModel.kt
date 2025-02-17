@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DiffUtil
 import com.weatherclothes.artist.domain.AddLocationEntityInteractor
 import com.weatherclothes.artist.domain.ClearTableInteractor
-import com.weatherclothes.artist.domain.CurrentWeatherInteractor
 import com.weatherclothes.artist.domain.DeleteLocationInteractor
 import com.weatherclothes.artist.domain.GetLocationsInteractor
 import com.weatherclothes.artist.domain.PlacesCurrentWeatherInteractor
@@ -21,11 +20,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-private const val TAG = "MyLog"
-
 class PlacesViewModel @AssistedInject constructor(
     private val interactor: GetLocationsInteractor,
-    private val currentWeatherInteractor: CurrentWeatherInteractor,
     private val clearTableInteractor: ClearTableInteractor,
     private val addLocationEntityInteractor: AddLocationEntityInteractor,
     private val placesCurrentWeatherInteractor: PlacesCurrentWeatherInteractor,
@@ -33,7 +29,8 @@ class PlacesViewModel @AssistedInject constructor(
     private val router: MainRouter,
 ) : ViewModel() {
 
-    var locations: List<LocationEntity> = listOf()
+    var locations: MutableList<LocationEntity> = mutableListOf()
+    var newLocations: MutableList<LocationEntity> = mutableListOf()
     var weatherLocations: MutableList<PlacesCurrentWeather?> = mutableListOf()
     var newWeatherLocations: MutableList<PlacesCurrentWeather?> = mutableListOf()
 
@@ -57,8 +54,8 @@ class PlacesViewModel @AssistedInject constructor(
     fun getLocations() {
         viewModelScope.launch(Dispatchers.IO) {
             _placeState.value = MainState.Loading
-            locations = interactor.getLocations()
-            locations.forEach {
+            newLocations = interactor.getLocations().toMutableList()
+            newLocations.forEach {
                 getWeatherLocation(it)
             }
             _placeState.value = MainState.Success
@@ -81,7 +78,7 @@ class PlacesViewModel @AssistedInject constructor(
         val cities = locations.toMutableList()
         val moveCity = cities.removeAt(from)
         cities.add(to, moveCity)
-        locations = cities.toList()
+        locations = cities
         viewModelScope.launch(Dispatchers.IO) {
             clearTableInteractor.clear()
             cities.forEach {
@@ -95,8 +92,6 @@ class PlacesViewModel @AssistedInject constructor(
             val location = locations.getOrNull(position)
             location?.let {
                 deleteInteractor.deleteLocation(it)
-                locations = listOf()
-                weatherLocations.clear()
                 getLocations()
             }
         }
@@ -111,6 +106,9 @@ class PlacesViewModel @AssistedInject constructor(
 
     fun updateWeatherLocationsList() {
         weatherLocations = newWeatherLocations
+        locations = newLocations
+        newWeatherLocations = mutableListOf()
+        newWeatherLocations = mutableListOf()
     }
 
     @AssistedFactory

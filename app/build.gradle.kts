@@ -19,6 +19,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("release") {
+            storePassword = "weather_clothes_291024"
+            keyPassword = "weather_clothes_291024"
+            keyAlias = "weather_clothes_291024_key"
+            storeFile = file("weather_clothes_291024.jks")
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -26,6 +35,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("release")
         }
     }
     compileOptions {
@@ -38,6 +48,43 @@ android {
 
     buildFeatures {
         viewBinding = true
+    }
+
+    tasks.register("buildReleaseAab") {
+        dependsOn("bundleRelease")
+        doLast {
+            val aabPath = "../app/build/outputs/bundle/release/${project.name}${project.version}-release.aab"
+            val aabFile = file(aabPath)
+            if (aabFile.exists()) {
+                println("${aabFile.absolutePath} exist")
+                copy {
+                    from(aabFile.absolutePath)
+                    into("../")
+                }
+                val resultFile = file("../${project.name}${project.version}-release.aab")
+                println(resultFile.exists())
+            } else {
+                println("${aabFile.absolutePath} NOT exist")
+            }
+        }
+    }
+
+    tasks.register("buildReleaseApk") {
+        dependsOn("assembleRelease")
+        doLast {val aabPath = "../app/build/outputs/apk/release/${project.name}${project.version}-release.apk"
+            val aabFile = file(aabPath)
+            if (aabFile.exists()) {
+                println("${aabFile.absolutePath} exist")
+                copy {
+                    from(aabFile.absolutePath)
+                    into("../")
+                }
+                val resultFile = file("../${project.name}${project.version}-release.apk")
+                println(resultFile.exists())
+            } else {
+                println("${aabFile.absolutePath} NOT exist")
+            }
+        }
     }
 }
 

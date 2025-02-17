@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -15,6 +17,7 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
+        archivesName.set(project.name+versionCode+versionName)
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -53,7 +56,8 @@ android {
     tasks.register("buildReleaseAab") {
         dependsOn("bundleRelease")
         doLast {
-            val aabPath = "../app/build/outputs/bundle/release/${project.name}${project.version}-release.aab"
+            val aabPath = "../app/build/outputs/bundle/release/${archivesName.get()}-release.aab"
+//            val aabPath = "../app/build/outputs/bundle/release/${project.name}${project.version}-release.aab"
             val aabFile = file(aabPath)
             if (aabFile.exists()) {
                 println("${aabFile.absolutePath} exist")
@@ -61,7 +65,8 @@ android {
                     from(aabFile.absolutePath)
                     into("../")
                 }
-                val resultFile = file("../${project.name}${project.version}-release.aab")
+                val resultFile = file("../${archivesName.get()}-release.aab")
+//                val resultFile = file("../${project.name}${project.version}-release.aab")
                 println(resultFile.exists())
             } else {
                 println("${aabFile.absolutePath} NOT exist")
@@ -71,7 +76,9 @@ android {
 
     tasks.register("buildReleaseApk") {
         dependsOn("assembleRelease")
-        doLast {val aabPath = "../app/build/outputs/apk/release/${project.name}${project.version}-release.apk"
+        doLast {
+            val aabPath = "../app/build/outputs/apk/release/${archivesName.get()}-release.apk"
+//            val aabPath = "../app/build/outputs/apk/release/${project.name}${project.version}-release.apk"
             val aabFile = file(aabPath)
             if (aabFile.exists()) {
                 println("${aabFile.absolutePath} exist")
@@ -79,7 +86,8 @@ android {
                     from(aabFile.absolutePath)
                     into("../")
                 }
-                val resultFile = file("../${project.name}${project.version}-release.apk")
+                val resultFile = file("../${archivesName.get()}-release.apk")
+//                val resultFile = file("../${project.name}${project.version}-release.apk")
                 println(resultFile.exists())
             } else {
                 println("${aabFile.absolutePath} NOT exist")

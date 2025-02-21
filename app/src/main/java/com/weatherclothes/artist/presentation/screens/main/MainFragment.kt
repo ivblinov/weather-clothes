@@ -230,12 +230,8 @@ class MainFragment : Fragment() {
     }
 
     private fun getLocation() {
-        if (checkGPSEnabled()) {
-            if (checkPermissions()) {
-                requestLocation(fusedClient, cancellationSource)
-            }
-        } else {
-            Log.d(TAG, "GPS выключен")
+        if (checkPermissions()) {
+            requestLocation(fusedClient, cancellationSource)
         }
     }
 
@@ -257,7 +253,7 @@ class MainFragment : Fragment() {
 
     private fun onPermissionsGranted() {
         createViewPager(true)
-        if (isInternetAvailable(requireContext())) {
+        if (isInternetAvailable(requireContext()) && checkGPSEnabled()) {
             getLocation()
         } else {
             viewModel?.changeError()

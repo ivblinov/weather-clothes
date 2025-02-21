@@ -52,6 +52,17 @@ class ViewPagerViewModel @AssistedInject constructor(
         }
     }
 
+    fun changeSexImage(sex: Boolean) {
+        weather?.let {
+            manImage = RecommendationClothes.getClothes(it, sex)
+        }
+    }
+
+    fun setLoadingState() {
+        _viewPagerMainState.value = MainState.Loading
+        _viewPagerMainState.value = MainState.Success
+    }
+
     private fun setParamHour(currentHour: Int?) {
         when (currentHour) {
             in 8..12 -> {

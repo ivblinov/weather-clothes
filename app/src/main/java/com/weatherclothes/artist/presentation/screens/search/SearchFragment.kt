@@ -39,8 +39,6 @@ import java.util.Locale
 import javax.inject.Inject
 import kotlin.getValue
 
-private const val TAG = "MyLog"
-
 class SearchFragment : Fragment() {
 
     private var _binding: FragmentSearchBinding? = null
@@ -127,6 +125,10 @@ class SearchFragment : Fragment() {
         binding.addButton.setOnClickListener {
             viewModel.addLocation()
             hideAddButton()
+        }
+
+        binding.deleteText.setOnClickListener {
+            binding.search.setText("")
         }
     }
 
@@ -233,10 +235,16 @@ class SearchFragment : Fragment() {
     }
 
     private fun hideHint(length: Int) {
-        if (length > 0)
+        if (length > 0) {
             binding.hint.visibility = View.INVISIBLE
-        else
+            binding.microphone.visibility = View.GONE
+            binding.deleteText.visibility = View.VISIBLE
+        }
+        else {
             binding.hint.visibility = View.VISIBLE
+            binding.deleteText.visibility = View.GONE
+            binding.microphone.visibility = View.VISIBLE
+        }
     }
 
     private fun getSearchAdapter(): SearchAdapter = binding.searchRV.adapter as SearchAdapter

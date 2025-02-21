@@ -114,45 +114,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <HorizontalScrollView
-        android:id="@+id/scrollView"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
         android:layout_width="@dimen/size_0dp"
         android:layout_height="wrap_content"
-        android:fadeScrollbars="false"
-        android:scrollbars="none"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@android:color/transparent"
+        android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
         app:layout_constraintBottom_toBottomOf="@+id/locationBar"
         app:layout_constraintEnd_toEndOf="@+id/locationBar"
+        app:layout_constraintHorizontal_bias="0"
         app:layout_constraintStart_toEndOf="@+id/settingsButton"
         app:layout_constraintTop_toTopOf="@+id/locationBar">
 
-        <com.google.android.material.appbar.AppBarLayout
-            android:id="@+id/appBarLayout"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tabLayout"
+            style="@style/TabLayoutStyle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_height="30dp"
             android:background="@android:color/transparent"
-            android:theme="@style/ThemeOverlay.MaterialComponents.Dark.ActionBar"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/locationBar"
-            app:layout_constraintHorizontal_bias="0"
-            app:layout_constraintStart_toEndOf="@+id/scrollView">
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
-                style="@style/TabLayoutStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="30dp"
-                android:background="@android:color/transparent"
-                app:tabIndicatorColor="@color/tabSelectedTextColor"
-                app:tabIndicatorHeight="1dp"
-                app:tabMode="scrollable"
-                app:tabPaddingBottom="@dimen/size_0dp"
-                app:tabSelectedTextColor="@color/tabSelectedTextColor"
-                app:tabTextColor="@color/tabTextColorWhite" />
-        </com.google.android.material.appbar.AppBarLayout>
-
-    </HorizontalScrollView>
+            app:tabIndicatorColor="@color/tabSelectedTextColor"
+            app:tabIndicatorHeight="1dp"
+            app:tabMode="scrollable"
+            app:tabPaddingBottom="@dimen/size_0dp"
+            app:tabSelectedTextColor="@color/tabSelectedTextColor"
+            app:tabTextColor="@color/tabTextColorWhite" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrierTop"

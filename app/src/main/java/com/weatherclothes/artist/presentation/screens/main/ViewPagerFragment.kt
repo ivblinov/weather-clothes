@@ -3,7 +3,6 @@ package com.weatherclothes.artist.presentation.screens.main
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,7 +27,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.getValue
 
-private const val TAG = "MyLog"
 class ViewPagerFragment : Fragment() {
 
     private var _binding: FragmentViewPagerBinding? = null
@@ -49,9 +47,14 @@ class ViewPagerFragment : Fragment() {
     @Inject
     lateinit var mainViewModelFactory: MainViewModelFactory
 
+    private var sex = true
+    private var degrees = true
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         inject()
+        sex = getSex()
+        degrees = getDegrees()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +89,13 @@ class ViewPagerFragment : Fragment() {
         subscribe()
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        changeSex()
+        changeDegrees()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -108,6 +118,10 @@ class ViewPagerFragment : Fragment() {
                                         vm.weather?.let { setCurrentWeather(it) }
                                         setHourWeather()
                                         setManImage()
+                                    } else {
+                                        changeSex()
+                                        viewModel.weather?.let { setCurrentWeather(it) }
+                                        setHourWeatherViewPagerState()
                                     }
                                 }
                                 MainState.Error -> {}
@@ -335,6 +349,8 @@ class ViewPagerFragment : Fragment() {
         }
     }
 
+    private fun getSex() = prefs.getBoolean(KEY_SEX, true)
+
     private fun getDegrees() = prefs.getBoolean(KEY_DEGREES, true)
 
     private fun checkCurrentCity(position: Int) {
@@ -342,6 +358,27 @@ class ViewPagerFragment : Fragment() {
         val changedCity = locationsList?.getOrNull(position-1)
         if (city != changedCity)
             city = changedCity
+    }
+
+    private fun changeSexImage(sex: Boolean) {
+        viewModel.changeSexImage(sex)
+    }
+
+    private fun changeDegrees() {
+        val currentDegrees = getDegrees()
+        if (currentDegrees != degrees) {
+            degrees = currentDegrees
+            viewModel.setLoadingState()
+        }
+    }
+
+    private fun changeSex() {
+        val currentSex = getSex()
+        if (currentSex != sex) {
+            changeSexImage(currentSex)
+            setManImageViewPagerState()
+            sex = currentSex
+        }
     }
 
     companion object {

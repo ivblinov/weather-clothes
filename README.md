@@ -16,11 +16,11 @@
 
 ### Скриншоты:
 
-<image src='app/src/main/assets/main.jpg' width=200></image>
-<image src='app/src/main/assets/add_place.jpg' width=200></image>
-<image src='app/src/main/assets/places.jpg' width=200></image>
-<image src='app/src/main/assets/settings.jpg' width=200></image>
-<image src='app/src/main/assets/search.jpg' width=200></image>
+<image src='app/src/main/assets/main.webp' width=200></image>
+<image src='app/src/main/assets/add_place.webp' width=200></image>
+<image src='app/src/main/assets/places.webp' width=200></image>
+<image src='app/src/main/assets/settings.webp' width=200></image>
+<image src='app/src/main/assets/search.webp' width=200></image>
 
 <br>
 
